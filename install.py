@@ -21,7 +21,7 @@ def main():
     # 1. Installation of Dependencies
     apps = " audacious cava eww rofi awesome thunar picom neofetch feh starship kitty lsd w3m"
     print(f"{Colors.BLUE}[+] Installing necessary packages...{Colors.RESET}")
-    run("pkg install x11-repo python python-pip git wget curl termux-x11-nightly pulseaudio firefox tur-repo zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 jq lxappearance neovim-nightly rust chafa -y")
+    run("pkg install x11-repo python python-pip git wget curl termux-x11-nightly pulseaudio firefox tur-repo zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 jq lxappearance neovim-nightly rust chafa flameshot pygobject -y")
     run(f"pkg install {apps} -y")
     run("pip install pyxdg pywal")
     run("cargo install pokeget")
@@ -52,6 +52,12 @@ def main():
             run(f"chmod +x {BIN_PATH}/{exe}")
 
     # 5. Fonts and Appearance
+    
+    # Mover xfce4 directamente desde la carpeta fonts del repositorio
+    if os.path.exists("fonts/xfce4"):
+        run("mv fonts/xfce4 ~/.local/share/")
+
+    # Copiar el resto de las fuentes (xfce4 ya no estará aquí)
     if os.path.isdir("fonts"):
         run("cp -r fonts ~/.local/share/")
         run("fc-cache -fv > /dev/null")
