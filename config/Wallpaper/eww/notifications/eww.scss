@@ -1,0 +1,48 @@
+.notification {
+  background: rgba(2, 6, 18, 0.98);
+//#090d1a;
+  border-radius: 28px;
+  padding: 15px;
+}
+
+.notifications-title {
+  font-size: 32px;
+  font-weight: bold;
+  color: #dce4ff;
+  margin-bottom: 10px;
+}
+
+.notification-card {
+  background: #0f1424;
+  border-radius: 22px;
+  margin-bottom: 10px;
+}
+
+.notification-header {
+  padding: 12px 18px;
+  background: #0c1220;
+  border-radius: 22px 22px 0 0;
+}
+
+.notification-content {
+  padding: 15px;
+}
+
+.notification-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #f5f7ff;
+}
+
+.notification-desc {
+  color: #aeb7d6;
+}
+
+.notification-icon {
+  font-size: 42px;
+  color: #8ea5ff;
+}
+
+.delete-btn {
+  color: #ff7d95;
+}

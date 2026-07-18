@@ -1,0 +1,82 @@
+;; --- 1. POLLERS AND SYSTEM VARIABLES ---
+(defpoll sys_cpu :interval "3s" "uptime | awk -F'load average:' '{ print $2 }' | cut -d, -f1 | awk '{usage=$1*12.5; if(usage>100) print 100; else print usage}'")
+(defpoll sys_ram :interval "5s" "free | grep Mem | awk '{print $3/$2 * 100.0}'")
+(defpoll sys_storage :interval "600s" "df -h /sdcard | tail -n 1 | awk '{print $5}' | tr -d '%'")
+(defpoll sys_temp :interval "1s" "~/.config/eww/scripts/battery.sh")
+(defvar sys_bright 100)
+;;(defpoll sys_bright :interval "1s" "~/.config/eww/scripts/brightness.sh")
+(defpoll sys_vol :interval "1s" "~/.config/eww/scripts/volume.sh")
+
+;; --- POLLERS FOR THE BUTTONS ---
+(defpoll state_wifi :interval "1s" "~/.config/eww/scripts/buttons.sh wifi status")
+(defpoll state_vol  :interval "1s" "~/.config/eww/scripts/buttons.sh vol status")
+(defpoll state_air  :interval "1s" "~/.config/eww/scripts/buttons.sh air status")
+(defpoll state_bri :interval "1s" "~/.config/eww/scripts/buttons.sh bri status")
+(defpoll state_bt   :interval "1s" "~/.config/eww/scripts/buttons.sh bt status")
+(defpoll state_mic  :interval "1s" "~/.config/eww/scripts/buttons.sh mic status")
+(defpoll state_crop :interval "1s" "~/.config/eww/scripts/buttons.sh crop status")
+(defpoll state_sync :interval "1s" "~/.config/eww/scripts/buttons.sh sync status")
+
+;; --- MUSIC POLLERS ---
+(defpoll music_title :interval "2s" "audtool current-song-tuple-data title || echo 'Not Playing'")
+(defpoll music_artist :interval "2s" "audtool current-song-tuple-data artist || echo 'Unknown'")
+(defpoll music_cover :interval "2s" "~/.config/eww/scripts/cover.sh")
+
+;; --- DATE POLLERS ---
+(defpoll time :interval "10s" `date +'{"day":"%d","month":"%m","year":"%Y","monthname":"%B"}'`)
+
+;; --- 2. VENTANA PRINCIPAL ---
+(defwindow dashboard4
+  :stacking "fg"
+  :windowtype "normal"
+  :wm-ignore false
+  :geometry (geometry :x "120px"
+                      :y "0%"
+                      :width "300px"
+                      :height "97%"
+                      :anchor "left center")
+  (dashboard4_layout))
+
+;; --- 3. DASHBOARD LAYOUT ---
+(defwidget dashboard4_layout []
+  (box :style "background-color: rgba(2, 6, 18, 0.98); border-radius: 20px; padding: 20px;"
+       :orientation "v" :spacing 15 :space-evenly false
+
+    ;; --- USER CARD ---
+    (box :style "background-color: #090E20; border-radius: 16px; padding: 20px;" :orientation "h" :space-evenly false
+        (box :style "background-image: url('../assets/pfp.png'); background-size: cover; min-width: 90px; min-height: 90px; border-radius: 50%; margin-right: 15px;")
+        (box :orientation "v" :valign "center"
+          (label :text "Welcome Keytaro" :halign "start" :style "font-size: 16px; color: #c0caf5; font-weight: bold;")
+          (label :text "@samsung" :halign "start" :style "font-size: 13px; color: #7aa2f7; margin-top: 4px;")
+          (label :text "-up 7 minutes" :halign "start" :style "font-size: 13px; color: #c0caf5; margin-top: 4px;")))
+
+    ;; --- MUSIC CARD ---
+    (box :style "background-color: #090E20; border-radius: 16px; padding: 15px;" :orientation "h" :space-evenly false
+        (box :style "background-image: url('${music_cover}'); background-size: cover; min-width: 90px; min-height: 90px; border-radius: 12px; margin-right: 15px;")
+
+  ;; Text container and controls
+        (box :orientation "v" :valign "center" :hexpand true :space-evenly false :spacing 5
+          (label :text {music_title != "" ? music_title : "Not Playing"} :halign "center" :style "font-size: 14px; color: #c0caf5; font-weight: bold;" :limit-width 18)
+          (label :text {music_artist != "" ? music_artist : "Unknown"} :halign "center" :style "font-size: 12px; color: #565f89;" :limit-width 20)
+          
+          ;; Centered controls
+          (box :orientation "h" :spacing 15 :halign "center" :style "margin-top: 8px;"
+            (button :onclick "audtool playlist-reverse" :style "color: #c0caf5; font-size: 14px;" "󰒮")
+            (button :onclick "audtool playback-playpause" :style "color: #c0caf5; font-size: 18px;" "󰏤")
+            (button :onclick "audtool playlist-advance" :style "color: #c0caf5; font-size: 14px;" "󰒭"))))
+
+    ;; --- CONTROL CARD ---
+    (box :style "background-color: #090E20; border-radius: 16px; padding: 15px;" :orientation "v" :spacing 30 :space-evenly false
+      (label :text "Controls" :halign "start" :style "color: #565f89; font-size: 12px; font-weight: bold; margin-bottom: 5px;")
+      (box :orientation "h" :spacing 15 :space-evenly false (label :text "󰋊" :style "color: #c0caf5; font-size: 18px;") (scale :class "s-red" :hexpand true :value {sys_storage ?: 50} :min 0 :max 101))
+      (box :orientation "h" :spacing 15 :space-evenly false (label :text "󰕾" :style "color: #c0caf5; font-size: 18px;") (scale :class "s-blue" :hexpand true :value {sys_vol ?: 0} :min 0 :max 101 :onchange "~/.config/eww/scripts/volume.sh {}"))
+      (box :orientation "h" :spacing 15 :space-evenly false (label :text "󰒓" :style "color: #c0caf5; font-size: 18px;") (scale :class "s-yellow" :hexpand true :value {sys_bright ?: 50} :min 0 :max 101 :onchange "~/.config/eww/scripts/brightness.sh {}")))
+
+    ;; --- CALENDAR CARD ---
+    (box :class "cal-box" :style "background-color: #090E20; border-radius: 16px; padding: 35px;" :orientation "v" :space-evenly false :vexpand false :valign "start"
+         (box :class "header-box" :orientation "h" :space-evenly true :style "margin-bottom: 10px;"
+              (label :text "〈 ${time.monthname} 〉" :halign "start" :style "color: #7aa2f7; font-weight: bold;")
+              (label :text "〈 ${time.year} 〉" :halign "end" :style "color: #7aa2f7; font-weight: bold;"))
+         (calendar :day {time.day} :month {time.month} :year {time.year} :show-details false :show-heading false :show-day-names true :vexpand false))
+  ))
+;; --- COPY UP TO THIS LINE TO CLOSE EVERYTHING PROPERLY ---

@@ -1,0 +1,35 @@
+;; --- POLLERS FOR THE CLOCK AND DATE ---
+(defpoll clock_hour :interval "1s" "date +%I")    ;; Usa +%H si prefieres formato de 24 horas
+(defpoll clock_minute :interval "1s" "date +%M")
+(defpoll full_date :interval "10s" "date +'%A, %d %B'")
+(defpoll time :interval "10s" `date +'{"day":"%d","month":"%m","year":"%Y","monthname":"%B"}'`)
+
+;; --- CALENDAR WINDOW ---
+(defwindow date2
+    :monitor 0
+    :geometry (geometry :x "120px" :y "230px" :width "320px" :height "400px" :anchor "left center")
+    :windowtype "normal"
+    :wm-ignore false
+    (cal_widget))
+
+;; --- WIDGET LAYOUT ---
+(defwidget cal_widget []
+    (box :class "cal-container" :orientation "v" :space-evenly false
+        
+        ;; 1. CLOCK SECTION (Hour | Minute)
+        (box :class "clock-box" :orientation "h" :space-evenly false :halign "center"
+            (label :class "clock-hour" :text clock_hour)
+            (box :class "clock-divider")
+            (label :class "clock-minute" :text clock_minute))
+        
+        ;; 2. DATE SECTION
+        (label :class "date-label" :text full_date :halign "center")
+
+        ;; 3. FUNCTIONAL CALENDAR
+        (box :class "cal-box" :orientation "v" :space-evenly false
+             (calendar :day {time.day}
+                       :month {time.month}
+                       :year {time.year}
+                       :show-details false
+                       :show-heading true    ;; Enabled for arrows to work
+                       :show-day-names true))))
