@@ -1,0 +1,160 @@
+/* ==========================================
+   COLOR VARIABLES
+   ========================================== */
+$bg: rgba(2, 6, 18, 0.98);
+$contrastbg: #090E20;
+$fg: #c0caf5;
+$black: #1a1e29;
+$dimblack: #2a2e39;
+$lightblack: #3a3e49;
+$bgSecondary: #15192b;
+$blue: #7aa2f7;
+$cyan: #89DCEB;
+$yellow: #FAE3B0;
+$red: #f7768e;
+$magenta: #bb9af7;
+
+$slider-trough: #090E20;
+
+/* ==========================================
+   STYLES
+   ========================================== */
+
+.actions {
+  background-color: $bg;
+  color: $fg;
+  font-family: "Product Sans";
+  padding: 20px;
+}
+
+.userinfobox {
+  .pfp {
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 50px;
+    min-width: 32px;
+    min-height: 32px;
+  }
+  .username {
+    font-family: "Product Sans";
+    font-size: 18px;
+    color: $fg;
+  }
+  .logout-btn {
+    background-color: $contrastbg;
+    color: $yellow;
+    font-family: "Iosevka Nerd Font";
+    font-size: 18px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all ease .2s;
+    &:hover { background-color: $bgSecondary; }
+    &:active { background-color: $black; }
+  }
+}
+
+.sysbuttonsbox {
+  .block-container {
+    .block {
+      background-color: $contrastbg;
+      padding: 0px 6px;
+      border-radius: 50px;
+      transition: all ease .3s;
+      color: $fg;
+      
+      &:hover { background-color: $bgSecondary; }
+      &:active { background-color: $contrastbg; }
+      
+      &.active {
+        background-color: $bgSecondary;
+        color: $fg;
+//$blue;
+        
+        &:hover { background-color: $dimblack; }
+        &:active { background-color: $black; }
+        
+        .sepbox .sep {
+          background-color: $blue;
+          opacity: 0.2;
+        }
+      }
+      
+      .iconbox .icon {
+        font-family: "Iosevka Nerd Font";
+        padding: 7px 17px 7px 8px;
+      }
+      .sepbox .sep {
+        background-color: $black;
+        margin: 0px 4px;
+        padding: 0px 1px;
+      }
+      .chevronbox {
+        font-family: "Iosevka Nerd Font";
+        padding: 0px 12px;
+      }
+    }
+    .label {
+      font-family: "Product Sans";
+      font-size: 14px;
+    }
+  }
+}
+
+.controlsbox {
+  background-color: $bgSecondary;
+  border-radius: 12px;
+  padding: 10px 15px;
+
+  .vol-slider {
+    .vol-label {
+      font-size: 20px;
+      font-family: "Iosevka Nerd Font";
+      margin-right: 15px;
+      color: $blue;
+    }
+    & scale trough {
+      all: unset;
+      border-radius: 10px;
+      border: none;
+      min-height: 8px;
+      margin-left: 3px;
+//      background-color: $slider-trough;
+      & highlight {
+        all: unset;
+        background: linear-gradient(to right, $blue, $cyan);
+        color: #000000;
+        border-radius: 10px;
+      }
+    }
+    & scale slider {
+      all: unset;
+    }
+  }
+
+  .br-slider {
+    .br-label {
+      font-size: 20px;
+      font-family: "Iosevka Nerd Font";
+      margin-right: 15px;
+      color: $yellow;
+    }
+    & scale trough {
+      all: unset;
+      border-radius: 10px;
+      border: none;
+      min-height: 8px;
+      margin-left: 3px;
+      background-color: $slider-trough;
+      & highlight {
+        all: unset;
+        background: linear-gradient(to right, $red, $yellow);
+        color: #000000;
+        border-radius: 10px;
+      }
+    }
+    & scale slider {
+      all: unset;
+    }
+  }
+}

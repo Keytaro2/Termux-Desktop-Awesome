@@ -1,0 +1,71 @@
+(defwindow menu1
+  :monitor 0
+  :wm-ignore false
+  :windowtype "normal"
+  :geometry (geometry
+    :x "-210px"
+    :y "100px"
+    :width "280px"
+    :height "340px"
+    :anchor "center center")
+  :stacking "fg"
+  :focusable true
+
+  (menu-box))
+
+(defwidget menu-item [text cmd]
+  (button
+    :class "menu-item"
+    :onclick cmd
+
+    (box
+      :orientation "horizontal"
+
+      (label
+        :class "menu-label"
+        :text text))))
+
+(defwidget awesome-item []
+  (button
+    :class "menu-item"
+    :onclick "awesome-client 'awesome.restart()'"
+
+    (box
+      :orientation "horizontal"
+      :space-evenly false
+
+      (label
+        :class "bspwm-label"
+        :text "AwesomeWM")
+
+      (label
+        :class "arrow"
+        :text "►"))))
+
+(defwidget menu-box []
+  (box
+    :orientation "vertical"
+    :class "menu"
+
+    (menu-item
+      :text "Terminal"
+      :cmd "xfce4-terminal --hide-menubar &")
+
+    (menu-item
+      :text "Explorer"
+      :cmd "thunar &")
+
+    (menu-item
+      :text "Browser"
+      :cmd "firefox &")
+
+    (menu-item
+      :text "Editor   "
+      :cmd "kitty -e nvim &")
+
+    (menu-item
+      :halign "start"
+      :text "GUI Edit"
+      :cmd "mousepad &")
+
+    (awesome-item)))
