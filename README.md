@@ -65,7 +65,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 | `ctrl` + `w` | Close Windows. |
 | `ctrl` + `Enter` | Open a terminal. |
 | `ctrl` + `k` | Open the program to change the wallpaper. |
-| `ctrk` + `n` | Close the program to change the wallpaper. |
+| `ctrl` + `n` | Close the program to change the wallpaper. |
 | `alt` + `/` | Takes screenshot. |
 | `ctrl` + `z`  | Toggle profiles. |
 | `ctrl` + `x` | Go back profiles. |
