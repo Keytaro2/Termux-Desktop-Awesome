@@ -16,7 +16,11 @@
 </div>
 
 > [!WARNING]
-> You need to back up your files before using this dotfile.
+> You should back up your files before using this dotfile configuration.
+> 
+> Important:Be careful with these commands, as you could lose your progress; make sure to execute them correctly.
+> 
+>  It is important to have more than 5GB of space available, as this desktop setup is somewhat resource-heavy.
 
 <details> 
   <summary>Termux Backups</summary>
