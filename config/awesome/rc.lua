@@ -76,7 +76,7 @@ beautiful.bg_normal = "#090E20"
 -- =========================================
 awful.spawn.with_shell("bash /data/data/com.termux/files/home/.config/eww/scripts/watch_music.sh > /data/data/com.termux/files/usr/tmp/watch_music.log 2>&1 &")
 awful.spawn.with_shell("pkill -f '[m]anage_notifs.sh'; bash /data/data/com.termux/files/home/.config/eww/scripts/manage_notifs.sh &")
-awful.spawn.with_shell("feh --bg-fill ~/.config/Wallpaper/wallpaper.jpg")
+awful.spawn.with_shell("feh --bg-fill ~/.config/Wallpaper/flowers-1.jpg")
 awful.spawn.with_shell("picom &")
 awful.spawn.with_shell("pgrep -x eww || eww daemon &")
 awful.spawn.with_shell("sleep 2 && eww open bar")
