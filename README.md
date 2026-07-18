@@ -94,6 +94,25 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
         <a href="https://www.reddit.com/u/Vgloomy/s/yg8IJcRWab"> User link</a> | I hope this provides a friendlier environment for support  request/DM. For real issues, prefer GitHub
 
 </details>
+<details>
+     <summary>Phantom Process Killer</summary>
+## Contents
+- [Phantom Process Killer](#Phantom-Process-Killer)
+- [Nightly Releases](#Nightly-Builds)
+- [Wikis](#Wikis)
+- [Miscellaneous](#Miscellaneous)
+- [True italic fonts](#True-italic-fonts)
+- [Displaying images in Termux](#Displaying-images-in-Termux)
+- [Running termux from ADB](#Running-termux-from-ADB)
+- [Debugging](#Debugging)
+- [Disclaimer](#Disclaimer)
+- [Forking Instructions](#Forking)
+- [Special Thanks](#Special-Thanks)
+***
+    
+</details>
+
+
 
 <div align="center">
     <h2>• screenshots •</h2>
