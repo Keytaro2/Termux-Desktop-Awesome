@@ -17,8 +17,8 @@
 
 > [!WARNING]
 > You should back up your files before using this dotfile configuration.
-> 
-> Important: Be careful with these commands, as you could lose your progress; make sure to execute them correctly.
+>
+> **IMPORTANT:** Be careful with these commands, as you could lose your progress; make sure to execute them correctly.
 > 
 >  It is important to have more than 5GB of space available, as this desktop setup is somewhat resource-heavy.
 
@@ -48,13 +48,11 @@
 <details> 
   <summary>Installation</summary>
 
-   - **IMPORTANT: Hyprland 0.55 Update**: If your distro has not shipped Hyprland 0.55 and/or you're not ready for it, you should switch to the Pre-Hyprland Luaification release. See [the wiki](https://ii.clsty.link/en/ii-qs/01setup/) for more info
-   - Just run `bash <(curl -s https://ii.clsty.link/get)`
-     - Or, clone this repo and run `./setup install`
-     - See [the wiki](https://ii.clsty.link/en/ii-qs/01setup/) for more details
-   - **Keybinds**: Should be somewhat familiar to Windows or GNOME users. Important ones:
-     - `Super`+`/` = keybind list
-     - `Super`+`Enter` = terminal
+   - **One-Line Installation**
+
+```bash
+apt update && apt upgrade -y && apt install git wget python python3 python-pip x11-repo -y && git clone https://github.com/Keytaro2/Termux-Desktop-Openbox.git && cd Termux-Desktop-Openbox && python3 install.py && ./startopenbox_termux.sh
+```
 
 
 </details>
