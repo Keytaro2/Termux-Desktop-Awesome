@@ -35,7 +35,7 @@ def main():
     config_items = [
         "audacious", "awesome", "cava", "eww", "flameshot", 
         "gtk-3.0", "neofetch", "picom", "rofi", "Thunar", 
-        "Wallpaper", "xfce4"
+        "Wallpaper", "xfce4", "starship.toml"
     ]
     for item in config_items:
         path = f"config/{item}"
@@ -78,10 +78,43 @@ def main():
         run(f"cp {font_src} ~/.termux/font.ttf")
         run("termux-reload-settings")
 
+    # 7. Shell Configurations (Cargo PATH and Starship)
+    print(f"{Colors.BLUE}[+] Setting up Shell environment...{Colors.RESET}")
+    
+    cargo_export = 'export PATH=$PATH:$HOME/.cargo/bin'
+    
+    # List of configuration files to update
+    shell_configs = [
+        os.path.expanduser("~/.bashrc"),
+        os.path.expanduser("~/.zshrc"),
+        "/data/data/com.termux/files/usr/etc/bash.bashrc",
+        "/data/data/com.termux/files/usr/etc/zshrc"
+    ]
+    
+    for rc in shell_configs:
+        if os.path.exists(rc):
+            # Cargo setup
+            run(f"grep -qxF '# CARGO' {rc} || echo '\n# CARGO\n{cargo_export}' >> {rc}")
+            
+            # Starship setup (checks if file name is bash or zsh to use correct init)
+            if "bash" in rc:
+                run(f"grep -qxF '# STARSHIP' {rc} || echo '\n# STARSHIP\neval \"$(starship init bash)\"' >> {rc}")
+            elif "zsh" in rc:
+                run(f"grep -qxF '# STARSHIP' {rc} || echo '\n# STARSHIP\neval \"$(starship init zsh)\"' >> {rc}")
+
+    # Fish configuration (separate due to different syntax)
+    fish_config = os.path.expanduser("~/.config/fish/config.fish")
+    run("mkdir -p ~/.config/fish")
+    fish_cargo = 'set -gx PATH $PATH $HOME/.cargo/bin'
+    fish_starship = 'starship init fish | source'
+    
+    if os.path.exists(fish_config):
+        run(f"grep -qxF '# CARGO' {fish_config} || echo '\n# CARGO\n{fish_cargo}' >> {fish_config}")
+        run(f"grep -qxF '# STARSHIP' {fish_config} || echo '\n# STARSHIP\n{fish_starship}' >> {fish_config}")
+
 if __name__ == "__main__":
     try:
         main()
     except KeyboardInterrupt:
-        # Ctrl + C is captured and the script closes without console errors
         print(f"\n{Colors.PINK}[!] Installation cancelled {Colors.RESET}")
         sys.exit(0)

@@ -14,23 +14,50 @@ local naughty = require("naughty")
 -- =========================================
 -- Smart function to move windows
 -- =========================================
-local function mover_inteligente(dx, dy)
+local function smart_move(dx, dy)
     local c = client.focus
     if c then
         -- Define which are your "free" apps
         -- Added "Firefox" to the list
-        local es_libre = (c.class == "Xfce4-terminal" or 
-                          c.class == "Thunar" or 
-                          c.class == "Audacious" or 
-                          c.class == "Firefox")
+        local is_free = (c.class == "Xfce4-terminal" or 
+                         c.class == "Thunar" or 
+                         c.class == "Audacious" or 
+                         c.class == "Firefox")
         
         -- If it's a free app OR the lock is disabled, move it
-        if es_libre or not modo_bloqueo_activado then
+        if is_free or not lock_mode_enabled then
             c:relative_move(dx, dy, 0, 0)
         end
     end
 end
 
+-- =========================================
+-- Smart function to resize windows
+-- =========================================
+local function smart_resize(dw, dh)
+    local c = client.focus
+    if not c then
+        return
+    end
+
+    local is_free = (
+        c.class == "Xfce4-terminal" or
+        c.class == "Thunar" or
+        c.class == "Audacious" or
+        c.class == "Firefox"
+    )
+
+    if is_free or not lock_mode_enabled then
+        local g = c:geometry()
+
+        c:geometry({
+            x = g.x,
+            y = g.y,
+            width = math.max(100, g.width + dw),
+            height = math.max(100, g.height + dh)
+        })
+    end
+end
 
 -- =========================================
 -- VARIABLES
@@ -78,17 +105,16 @@ globalkeys = gears.table.join(
     awful.key({ "Mod1" }, "d", function () awful.spawn.with_shell("eww close launcher") end),
 
     -- Move floating window (Smart: Free apps always, Widgets only if not locked)
-    awful.key({ "Control" }, "Left",  function () mover_inteligente(-20, 0) end),
-    awful.key({ "Control" }, "Down",  function () mover_inteligente(0, 20) end),
-    awful.key({ "Control" }, "Up",    function () mover_inteligente(0, -20) end),
-    awful.key({ "Control" }, "Right", function () mover_inteligente(20, 0) end),
+    awful.key({ "Control" }, "Left",  function () smart_move(-20, 0) end),
+    awful.key({ "Control" }, "Down",  function () smart_move(0, 20) end),
+    awful.key({ "Control" }, "Up",    function () smart_move(0, -20) end),
+    awful.key({ "Control" }, "Right", function () smart_move(20, 0) end),
 
     -- Resize window (Keep the previous logic if you prefer it to also be smart)
-    awful.key({ "Mod1" }, "Left",  function () if not modo_bloqueo_activado then awful.client.moveresize(0, 0, -20, 0) end end),
-    awful.key({ "Mod1" }, "Down",  function () if not modo_bloqueo_activado then awful.client.moveresize(0, 0, 0, 20) end end),
-    awful.key({ "Mod1" }, "Up",    function () if not modo_bloqueo_activado then awful.client.moveresize(0, 0, 0, -20) end end),
-    awful.key({ "Mod1" }, "Right", function () if not modo_bloqueo_activado then awful.client.moveresize(0, 0, 20, 0) end end),
-
+    awful.key({ "Mod1" }, "Left",  function() smart_resize(-20, 0) end),
+    awful.key({ "Mod1" }, "Down",  function() smart_resize(0, 20) end),
+    awful.key({ "Mod1" }, "Up",    function() smart_resize(0, -20) end),
+    awful.key({ "Mod1" }, "Right", function() smart_resize(20, 0) end),
     -- Flameshot (Alt + /)
     awful.key({ "Mod1" }, "/", function ()
         local cmd = "mkdir -p $HOME/Pictures && " ..
@@ -126,12 +152,12 @@ globalkeys = gears.table.join(
 
     -- Controls
     awful.key({ "Control" }, "v", function ()
-        modo_raton_activado = not modo_raton_activado
-        naughty.notify({ app_name = "🖱️ Mouse Mode", text = (modo_raton_activado and "ENABLED" or "DISABLED") })
+        mouse_mode_enabled = not mouse_mode_enabled
+        naughty.notify({ app_name = "🖱️ Mouse Mode", text = (mouse_mode_enabled and "ENABLED" or "DISABLED") })
     end),
     awful.key({ "Control" }, "g", function ()
-        modo_bloqueo_activado = not modo_bloqueo_activado
-        naughty.notify({ app_name = "⚙️ Position", text = (modo_bloqueo_activado and "🔒 LOCKED" or "🔓 UNLOCKED") })
+        lock_mode_enabled = not lock_mode_enabled
+        naughty.notify({ app_name = "⚙️ Position", text = (lock_mode_enabled and "🔒 LOCKED" or "🔓 UNLOCKED") })
     end)
 )
 root.keys(globalkeys)
@@ -139,23 +165,23 @@ root.keys(globalkeys)
 -- =========================================
 -- GLOBAL VARIABLES AND BUTTONS
 -- =========================================
-modo_raton_activado = false
-modo_bloqueo_activado = true
-local ultimo_clic_tiempo = 0
-local doble_clic_intervalo = 0.30 
+mouse_mode_enabled = false
+lock_mode_enabled = true
+local last_click_time = 0
+local double_click_interval = 0.30 
 
 clientbuttons = gears.table.join(
     awful.button({}, 1, function(c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
-        if modo_raton_activado and not modo_bloqueo_activado then
-            local tiempo_actual = os.clock()
-            if tiempo_actual - ultimo_clic_tiempo < doble_clic_intervalo then awful.mouse.client.resize(c) end
-            ultimo_clic_tiempo = tiempo_actual
+        if mouse_mode_enabled and not lock_mode_enabled then
+            local current_time = os.clock()
+            if current_time - last_click_time < double_click_interval then awful.mouse.client.resize(c) end
+            last_click_time = current_time
         end
     end),
     awful.button({ "Mod1" }, 1, function(c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
-        if modo_raton_activado and not modo_bloqueo_activado then awful.mouse.client.move(c) end
+        if mouse_mode_enabled and not lock_mode_enabled then awful.mouse.client.move(c) end
     end)
 )
 
@@ -212,18 +238,18 @@ awful.rules.rules = {
 -- =========================================
 
 -- Function to build textured circular buttons
-local function crear_boton_punto(color, accion)
-    local boton = wibox.widget {
+local function create_dot_button(color, action)
+    local button = wibox.widget {
         markup = '<span foreground="' .. color .. '">●</span>',
         font   = "Sans 14",
         align  = "center",
         valign = "center",
         widget = wibox.widget.textbox
     }
-    boton:buttons(gears.table.join(
-        awful.button({ }, 1, accion)
+    button:buttons(gears.table.join(
+        awful.button({ }, 1, action)
     ))
-    return boton
+    return button
 end
 
 -- Update of titlebars block with forced hiding
@@ -233,18 +259,18 @@ client.connect_signal("request::titlebars", function(c)
         c.border_width = 0
         
         -- Create the sidebar for your buttons
-        local barra_lateral = awful.titlebar(c, {
+        local sidebar = awful.titlebar(c, {
             position = "left",
             size     = 40,
             bg       = "#090E20"
         })
 
-        barra_lateral:setup {
+        sidebar:setup {
             {
                 {
-                    crear_boton_punto("#ed6a7f", function() c:kill() end),
-                    crear_boton_punto("#f2d68f", function() c.minimized = true end),
-                    crear_boton_punto("#a8e8c0", function() 
+                    create_dot_button("#ed6a7f", function() c:kill() end),
+                    create_dot_button("#f2d68f", function() c.minimized = true end),
+                    create_dot_button("#a8e8c0", function() 
                         c.maximized = not c.maximized 
                         c:raise() 
                     end),
@@ -322,12 +348,12 @@ client.connect_signal("manage", function(c)
             if c.valid then
                 local s_geo = c.screen.geometry
                 local c_geo = c:geometry()
-                local ancho = c_geo.width
-                local alto = c_geo.height
+                local client_width = c_geo.width
+                local client_height = c_geo.height
                 
                 -- Pre-calculated global variables
-                local center_x = s_geo.x + (s_geo.width - ancho) / 2
-                local center_y = s_geo.y + (s_geo.height - alto) / 2
+                local center_x = s_geo.x + (s_geo.width - client_width) / 2
+                local center_y = s_geo.y + (s_geo.height - client_height) / 2
 
                 -- 🔥 MENU RULES FIRST: Prevent them from stealing positions due to their size
                 -- ===================================================
@@ -369,45 +395,45 @@ client.connect_signal("manage", function(c)
                         local dash2_left = (s_geo.x + s_geo.width / 2) - 375   -- Screen center - half of dashboard2 (750/2)
                         local gap = dash2_left - date2_right                   -- Real free space between both widgets
                         
-                        c:geometry({ x = date2_right + (gap - ancho) / 2, y = center_y + 180 })
+                        c:geometry({ x = date2_right + (gap - client_width) / 2, y = center_y + 180 })
                     end
 
                 -- ===================================================
                 -- 🔹 1. DASHBOARD 1 (Real size: 650px)
                 -- ===================================================
-                elseif (c.name and c.name:match("dashboard1")) or (ancho >= 640 and ancho <= 660) then
+                elseif (c.name and c.name:match("dashboard1")) or (client_width >= 640 and client_width <= 660) then
                     awful.placement.left(c, { margins = { left = 120 }, honor_workarea = false })
-                    awful.placement.vertical_center(c, { honor_workarea = false })
+                    awful.placement.center_vertical(c, { honor_workarea = false })
 
                 -- ===================================================
                 -- 🎛️ 2. DASHBOARD 2 (750x500)
                 -- ===================================================
-                elseif (c.name and c.name:match("dashboard2")) or (ancho >= 730 and ancho <= 770) then
-                    local fondo_y = s_geo.y + s_geo.height - alto - 15
-                    c:geometry({ x = center_x, y = fondo_y })
+                elseif (c.name and c.name:match("dashboard2")) or (client_width >= 730 and client_width <= 770) then
+                    local bottom_y = s_geo.y + s_geo.height - client_height - 15
+                    c:geometry({ x = center_x, y = bottom_y })
 
                 -- ===================================================
                 -- 🎛️ 3. DASHBOARD 3 (600x780)
                 -- ===================================================
-                elseif (c.name and c.name:match("dashboard3")) or (ancho >= 580 and ancho <= 620) then
-                    local fondo_y = s_geo.y + s_geo.height - alto - 15
-                    c:geometry({ x = center_x, y = fondo_y })
+                elseif (c.name and c.name:match("dashboard3")) or (client_width >= 580 and client_width <= 620) then
+                    local bottom_y = s_geo.y + s_geo.height - client_height - 15
+                    c:geometry({ x = center_x, y = bottom_y })
 
                 -- ===================================================
                 -- 📱 4. DASHBOARD 4 (~350-400px real width, 97% height)
                 -- ===================================================
                 -- 🔥 Ultra-safe detection so it doesn't fall into the screen center limbo
                 elseif (c.name and c.name:match("dashboard4")) or 
-                       (c.name and c.name:match("dashboard") and ancho < 500) or 
-                       (ancho >= 280 and ancho <= 450 and not (c.name and (c.name:match("actions") or c.name:match("menu") or c.name:match("date")))) then
+                       (c.name and c.name:match("dashboard") and client_width < 500) or 
+                       (client_width >= 280 and client_width <= 450 and not (c.name and (c.name:match("actions") or c.name:match("menu") or c.name:match("date")))) then
                     awful.placement.left(c, { margins = { left = 120 }, honor_workarea = false })
-                    awful.placement.vertical_center(c, { honor_workarea = false })
+                    awful.placement.center_vertical(c, { honor_workarea = false })
 
                 -- ===================================================
                 -- ⚙️ 5. ACTIONS 1 and ACTIONS 2 (400px width)
                 -- ===================================================
-                elseif (ancho >= 390 and ancho <= 410 and alto >= 200 and alto <= 900) or (c.name and c.name:match("actions2")) then
-                    local right_x = s_geo.x + s_geo.width - ancho - 20
+                elseif (client_width >= 390 and client_width <= 410 and client_height >= 200 and client_height <= 900) or (c.name and c.name:match("actions2")) then
+                    local right_x = s_geo.x + s_geo.width - client_width - 20
                     local current_profile = "1"
                     local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
                     if file then
@@ -429,15 +455,15 @@ client.connect_signal("manage", function(c)
                 -- ===================================================
                 -- 🔔 6. NOTIFICATIONS (500px width)
                 -- ===================================================
-                elseif ancho >= 490 and ancho <= 510 then
-                    local right_x = s_geo.x + s_geo.width - ancho - 20
+                elseif client_width >= 490 and client_width <= 510 then
+                    local right_x = s_geo.x + s_geo.width - client_width - 20
                     local top_y = s_geo.y + 15
                     c:geometry({ x = right_x, y = top_y })
 
                 -- ===================================================
                 -- 📅 7. DATE 1 (~366x356)
                 -- ===================================================
-                elseif (ancho >= 360 and ancho <= 372 and alto >= 350 and alto <= 362) or (c.name and c.name:match("date1")) then
+                elseif (client_width >= 360 and client_width <= 372 and client_height >= 350 and client_height <= 362) or (c.name and c.name:match("date1")) then
                     local current_profile = "1"
                     local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
                     if file then
@@ -446,9 +472,9 @@ client.connect_signal("manage", function(c)
                     end
 
                     if current_profile == "3" then
-                        local right_x = s_geo.x + s_geo.width - ancho - 20
-                        local bottom_y = s_geo.y + s_geo.height - alto - 20
-                        c:geometry({ x = right_x, y = bottom_y })
+                        local right_x = s_geo.x + s_geo.width - client_width - 20
+                        local date_bottom_y = s_geo.y + s_geo.height - client_height - 20
+                        c:geometry({ x = right_x, y = date_bottom_y })
                     else
                         c:geometry({ x = center_x - 170, y = center_y - 275 })
                     end
@@ -456,7 +482,7 @@ client.connect_signal("manage", function(c)
                 -- ===================================================
                 -- 📅 8. DATE 2 (~320x400)
                 -- ===================================================
-                elseif (ancho >= 310 and ancho <= 335 and alto >= 390 and alto <= 415) or (c.name and c.name:match("date2")) then
+                elseif (client_width >= 310 and client_width <= 335 and client_height >= 390 and client_height <= 415) or (c.name and c.name:match("date2")) then
                     local current_profile = "2"
                     local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
                     if file then
