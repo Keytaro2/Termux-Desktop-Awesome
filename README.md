@@ -140,7 +140,9 @@ Widget system: Termux + Awesome + Eww
 
 <div align="center">
     <h2>• Other Screenshots •</h2>
-</div> ---
+</div> 
+
+---
 
 ### Shutdown menu
 
