@@ -38,7 +38,7 @@
 </details>
 
 <details> 
-  <summary>Notable features</summary>
+  <summary>Notable Features</summary>
      
   - **Overview**: Shows open apps with live previews
   - **catppuccin mocha theme**: Choose your wallpaper with Ctrl + K, done, enjoy
@@ -220,7 +220,7 @@ su -c getprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs
 
 
 <div align="center">
-    <h2>• screenshots •</h2>
+    <h2>• Screenshots •</h2>
     <h3></h3>
 </div>
 
