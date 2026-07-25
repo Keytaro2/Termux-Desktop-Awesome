@@ -1,10 +1,9 @@
 ;; --- 1. POLLERS AND SYSTEM VARIABLES ---
-(defpoll sys_cpu :interval "3s" "uptime | awk -F'load average:' '{ print $2 }' | cut -d, -f1 | awk '{usage=$1*12.5; if(usage>100) print 100; else print usage}'")
-(defpoll sys_ram :interval "5s" "free | grep Mem | awk '{print $3/$2 * 100.0}'")
-(defpoll sys_storage :interval "600s" "df -h /sdcard | tail -n 1 | awk '{print $5}' | tr -d '%'")
+(defpoll sys_cpu :interval "3s" "~/.config/eww/scripts/cpu.sh")
+(defpoll sys_ram :interval "5s" "~/.config/eww/scripts/ram.sh")
+(defpoll sys_storage :interval "600s" "~/.config/eww/scripts/storage.sh")
 (defpoll sys_temp :interval "1s" "~/.config/eww/scripts/battery.sh")
 (defvar sys_bright 100)
-;;(defpoll sys_bright :interval "1s" "~/.config/eww/scripts/brightness.sh")
 (defpoll sys_vol :interval "1s" "~/.config/eww/scripts/volume.sh")
 
 ;; --- POLLERS FOR THE BUTTONS ---

@@ -227,8 +227,37 @@ class WallpaperSelector(Gtk.Window):
         return False
 
     def apply_wallpaper(self, img_path):
+        # 1. Apply the wallpaper using feh
         subprocess.run(["feh", "--bg-fill", img_path])
         print(f"Wallpaper applied: {img_path}")
+
+        # 2. Send notifications to Eww using logger.sh
+        logger_script = os.path.expanduser("~/.config/eww/scripts/logger.sh")
+        
+        if os.path.exists(logger_script):
+            try:
+                # Notification 1: Large Image Design (DESIGN B)
+                subprocess.run([
+                    "bash", logger_script, 
+                    "Wallpaper", 
+                    "New Wallpaper Applied", 
+                    os.path.basename(img_path), 
+                    img_path
+                ])
+                
+                # Notification 2: Text-Only Design (DESIGN C)
+                # We send "null" as the image so it mimics the "Screenshot removed" style
+                subprocess.run([
+                    "bash", logger_script, 
+                    "Wallpaper", 
+                    "Wallpaper", 
+                    "Wallpaper applied successfully.", 
+                    "null"
+                ])
+            except Exception as e:
+                print(f"Error sending notification: {e}")
+        else:
+            print(f"Logger script not found at: {logger_script}")
 
     def on_card_clicked(self, widget, event, index, img_path):
         self.cards[self.current_index].get_style_context().remove_class("selected")
