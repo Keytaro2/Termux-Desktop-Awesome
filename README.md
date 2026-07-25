@@ -295,7 +295,7 @@ Widget system: Termux + Awesome + Eww
 
 <img src="https://github.com/user-attachments/assets/314c3bcc-8c74-4fb3-9c08-057d20ffac15" alt="cava and actions">
 
-#### The notification system supports Audacious, Flameshot, mouse mode, and lock mode.
+#### The notification system supports Audacious, Flameshot, Mouse mode,  Lock mode and Wallpapers.
 
 <img src="https://github.com/user-attachments/assets/f970f283-d17e-4b68-848b-674914014a11" alt="Desktop Preview">
 
