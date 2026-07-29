@@ -306,7 +306,6 @@ Widget system: Termux + Awesome + Eww
     <h3></h3>
 </div>
 
- - Inspiration: This desktop setup is obviously inspired by AlphaTechnolog dotfiles, give him a follow and a star. ⭐🌟💫. https://github.com/AlphaTechnolog/dotfiles
-  
+ - Inspiration: This desktop setup is obviously inspired by [AlphaTechnolog](https://github.com/AlphaTechnolog/dotfiles). dotfiles, give him a follow and a star. ⭐🌟💫.
  - Copying: Absolutely, feel free. Just follow the license and it's all good
  
