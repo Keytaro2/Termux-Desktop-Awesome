@@ -57,6 +57,7 @@
     You can move the widgets using the mouse. You can also resize them by holding Alt + mouse and positioning the cursor on a corner or edge. Similarly, if you wish to disable it again, press Ctrl + v, it will turn off, and a notification will appear.
 
     <img src="https://github.com/user-attachments/assets/4886a8a9-15e2-48d7-b479-c1ff47ac6bfb" alt="image" width="200" />
+
     It is worth noting that this mode only works if Locked Mode is disabled.
     
 </details>
