@@ -43,6 +43,8 @@
   - **Overview**: Shows open apps with live previews
   - **catppuccin mocha theme**: Choose your wallpaper with Ctrl + K, done, enjoy
   - **Transparent installation**: Every command is shown before it's run
+  - 🔒 LOCKED MODE
+  -  Description: This is active by default, as it allows you to move the eww widgets. To deactivate it, press Ctrl + G, a notification will appear in the notifications widget. You can move the widgets using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. Similarly, if you want to re-enable locked mode, press Ctrl + G, it will activate, and a notification will appear.
 </details>
 
 <details> 
