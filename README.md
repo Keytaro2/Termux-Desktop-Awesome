@@ -70,7 +70,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 | `ctrl` + `z`  | Toggle profiles. |
 | `ctrl` + `x` | Go back profiles. |
 | `ctrl` + `v` | Enabled or disable mouse mode. |
-| `ctrl` + `g`  | Activate locked mode or deactivate unlocked mode. |
+| `ctrl` + `g`  | Activate locked mode or deactivate locked mode. |
 | `alt` + `r` | Restart awesomme. |
 | `alt` + `q` | Quit awesomme. |
 | `ctrl` + `d` | Run rofi. |
