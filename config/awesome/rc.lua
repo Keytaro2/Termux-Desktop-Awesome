@@ -158,7 +158,7 @@ globalkeys = gears.table.join(
     end),
     awful.key({ "Control" }, "g", function ()
         lock_mode_enabled = not lock_mode_enabled
-        naughty.notify({ app_name = "⚙️ Position", text = (lock_mode_enabled and "🔒 LOCKED" or "🔓 UNLOCKED") })
+        naughty.notify({ app_name = "🔒 Locked Mode", text = (lock_mode_enabled and "🔒 LOCKED" or "🔓 UNLOCKED") })
     end)
 )
 root.keys(globalkeys)
