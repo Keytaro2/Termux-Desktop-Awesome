@@ -25,12 +25,12 @@
 <details> 
   <summary>Termux Backups</summary>
 
-  - **Compress data**:
+  - **📁 Compress data**:
   - termux-setup-storage
   - cd ..
   - tar -zcvf /sdcard/termux-backup.tar.gz home usr
    
-  - **Decompress (extract) data**:
+  - **📂 Decompress (extract) data**:
   - termux-setup-storage
   - cd ..
   - tar -zxf /sdcard/termux-backup.tar.gz --recursive-unlink --preserve-permissions
