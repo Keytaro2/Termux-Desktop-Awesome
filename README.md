@@ -41,7 +41,7 @@
   <summary>Notable Features</summary>
      
   - **OVERVIEW**: open apps with live previewsShows
-  - ** 💻 CATPPUCCIN MOCHA THEME**: Choose your wallpaper with Ctrl + K, done, enjoy
+  - **💻 CATPPUCCIN MOCHA THEME**: Choose your wallpaper with Ctrl + K, done, enjoy
   - **TRANSPARENT INSTALATION**: Every command is shown before it's run
   - **🔒 LOCKED MODE**: This is active by default, as it allows you to move the eww widgets. To deactivate it, press Ctrl + G, a notification will appear in the notifications widget.
 
