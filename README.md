@@ -62,7 +62,7 @@
 
   - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as Screenshots.
 
-    <img src="https://github.com/user-attachments/assets/60bc1370-aa75-4889-a71b-3750b39d0806" alt="image" width="200" />
+    <img src="https://github.com/user-attachments/assets/5a8d51f0-69c2-4922-a606-b53ca29b859a" alt="image" width="200" />
   
      Wallpaper changes.
 
