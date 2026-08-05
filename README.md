@@ -49,7 +49,7 @@
 
     You can move the widgets using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. Similarly, if you want to re-locked mode, press Ctrl + G, it will lock, and a notification will appear.
 
-    <img src="https://github.com/user-attachments/assets/486c5884-9104-41d2-b035-74426fc1dca8" alt="image" width="200" />
+    <img src="https://github.com/user-attachments/assets/7803cae9-d7be-4d64-9d19-17fbbb96d139" alt="image" width="200" />
   - **🖱️ MOUSE MODE**: This is disabled by default, as it allows you to move eww widgets and other programs using the mouse. To enable it, press Ctrl + v; a notification will appear in the notification widget.
 
     <img src="https://github.com/user-attachments/assets/456f07c5-b40a-4482-83ef-5b6757c0eb97" alt="image" width="200" />
