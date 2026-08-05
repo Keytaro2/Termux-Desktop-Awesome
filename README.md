@@ -72,7 +72,7 @@
 
     <img src="https://github.com/user-attachments/assets/e1276683-450c-447f-8327-abc64dea27f9" alt="image" width="200" />
 
-     you can play music using `audacious -p ~/storage/music`—and, of course, you need to have music downloaded.
+     you can play music using `audacious -p ~/storage/music` and, of course, you need to have music downloaded.
     
 </details>
 
