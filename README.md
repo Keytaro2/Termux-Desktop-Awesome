@@ -70,7 +70,7 @@
 
      and Music playback.
 
-    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
+    <img src="https://github.com/user-attachments/assets/e1276683-450c-447f-8327-abc64dea27f9" alt="image" width="200" />
 
      you can play music using `audacious -p ~/storage/music`—and, of course, you need to have music downloaded.
     
