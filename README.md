@@ -60,7 +60,19 @@
 
     It is worth noting that this mode only works if Locked Mode is disabled.
 
-  - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as screenshots, wallpaper changes, and music playback; you can play music using `audacious -p ~/storage/music`—and, of course, you need to have music downloaded.
+  - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as screenshots.
+
+    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
+  
+     wallpaper changes.
+
+    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
+
+     and music playback.
+
+    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
+
+     you can play music using `audacious -p ~/storage/music`—and, of course, you need to have music downloaded.
     
 </details>
 
