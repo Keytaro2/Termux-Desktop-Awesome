@@ -45,7 +45,7 @@
   - **💾 TRANSPARENT INSTALATION**: Every command is shown before it's run
   - **🔒 LOCK MODE**: This is locked by default, as it allows you to move the eww widgets. To unlocked it, press Ctrl + G, a notification will appear in the notifications widget.
 
-    <img src="https://github.com/user-attachments/assets/de9b9286-06cb-4e24-a953-6abed5d94e5c" alt="image" width="200" />
+    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
 
     You can move the widgets using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. Similarly, if you want to re-locked mode, press Ctrl + G, it will lock, and a notification will appear.
 
