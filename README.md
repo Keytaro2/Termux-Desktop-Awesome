@@ -60,15 +60,15 @@
 
     It is worth noting that this mode only works if Locked Mode is disabled.
 
-  - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as screenshots.
+  - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as Screenshots.
 
     <img src="https://github.com/user-attachments/assets/60bc1370-aa75-4889-a71b-3750b39d0806" alt="image" width="200" />
   
-     wallpaper changes.
+     Wallpaper changes.
 
-    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
+    <img src="https://github.com/user-attachments/assets/7b4ff17a-53ac-4570-b002-101144917cdf" alt="image" width="200" />
 
-     and music playback.
+     and Music playback.
 
     <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
 
