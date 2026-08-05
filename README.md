@@ -72,7 +72,7 @@
 
     <img src="https://github.com/user-attachments/assets/e1276683-450c-447f-8327-abc64dea27f9" alt="image" width="200" />
 
-     you can play music using `audacious -p ~/storage/music` and, of course, you need to have music downloaded.
+     you can play music using `audacious -p ~/storage/music` and, of course, you need to have music downloaded, If you want to see how to take a screenshot or change your wallpaper, you can check the keyboard shortcuts [here](#keyboard-shortcuts).
     
 </details>
 
@@ -90,7 +90,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 
 <details>
   <summary>Keyboard Shortcut</summary>
-   <a id="atajos-teclado"></a>
+   <a id="keyboard-shortcuts"></a>
 
 | Keys | Action |
 | :-------------------: | :---------------------------------------------------------------: |
