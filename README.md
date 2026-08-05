@@ -90,6 +90,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 
 <details>
   <summary>Keyboard Shortcut</summary>
+   <a id="atajos-teclado"></a>
 
 | Keys | Action |
 | :-------------------: | :---------------------------------------------------------------: |
