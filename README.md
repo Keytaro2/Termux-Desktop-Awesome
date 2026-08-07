@@ -62,6 +62,8 @@
     **Note:** Mouse Mode only works if Lock Mode is unlocked.
 
   - **🔔 NOTIFICATION SYSTEM:** This is the standout feature of this desktop! The notification system fully integrates with Mouse Mode, Lock Mode, and screenshots. It also displays real-time updates for:
+    
+     Screenshot.
 
     <img src="https://github.com/user-attachments/assets/5a8d51f0-69c2-4922-a606-b53ca29b859a" alt="image" width="200" />
   
