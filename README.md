@@ -58,7 +58,7 @@
 
     <img src="https://github.com/user-attachments/assets/4886a8a9-15e2-48d7-b479-c1ff47ac6bfb" alt="image" width="200" />
 
-    It is worth noting that this mode only works if Locked Mode is disabled.
+    It is worth noting that this mode only works if Lock Mode is disabled.
 
   - **🔔 NOTIFICATION SYSTEM**: I think this is the most striking feature of this desktop. It supports mouse and lock modes, as well as Screenshots.
 
