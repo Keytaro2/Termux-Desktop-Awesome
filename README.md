@@ -61,7 +61,7 @@
 
     **Note:** Mouse Mode only works if Lock Mode is unlocked.
 
-  - **🔔 NOTIFICATION SYSTEM:** This is the standout feature of this desktop! The notification system fully integrates with Mouse Mode, Lock Mode, and screenshots. It also displays real-time updates for:
+  - **🔔 NOTIFICATION SYSTEM:** This is the standout feature of this desktop! The notification system fully integrates with Mouse Mode and Lock Mode. It also displays real-time updates for:
     
      Screenshot.
 
@@ -75,7 +75,7 @@
 
     <img src="https://github.com/user-attachments/assets/e1276683-450c-447f-8327-abc64dea27f9" alt="image" width="200" />
 
-     You can play music using `audacious -p ~/storage/music` (requires local music files). If you want to see how to take a screenshot or change your wallpaper, you can check the keyboard shortcuts [here](#keyboard-shortcuts).
+     You can play music using ```audacious -p ~/storage/music``` (requires local music files). If you want to see how to take a screenshot or change your wallpaper, you can check the keyboard shortcuts [here](#keyboard-shortcuts).
     
 </details>
 
