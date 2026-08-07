@@ -80,7 +80,7 @@
 audacious -p ~/storage/music
 ```
 
-    (requires local music files). If you want to see how to take a screenshot or change your wallpaper, you can check the keyboard shortcuts [here](#keyboard-shortcuts).
+(requires local music files). If you want to see how to take a screenshot or change your wallpaper, you can check the keyboard shortcuts [here](#keyboard-shortcuts).
 
 </details>
 
