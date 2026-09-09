@@ -6,6 +6,8 @@ kill -9 $(pgrep -f "termux.x11") 2>/dev/null
 # Enable PulseAudio over Network
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1
 
+echo $XCURSOR_PATH 
+
 # Prepare termux-x11 session
 export XDG_RUNTIME_DIR=${TMPDIR}
 termux-x11 :0 >/dev/null &
@@ -20,13 +22,20 @@ sleep 1
 # Set audio server
 export PULSE_SERVER=127.0.0.1
 
-# Aceleración por Hardware para GPU Mali
+# Hardware Acceleration for Mali GPU
 if ! pgrep -x "virgl_test_ser" > /dev/null; then
     virgl_test_server_android &
 fi
 export GALLIUM_DRIVER=virpipe
 export MESA_GL_VERSION_OVERRIDE=4.0
 
+# Cursor settings
+echo "Xcursor.size: 32" > ~/.Xresources
+xrdb -merge ~/.Xresources
+export XCURSOR_SIZE=32
+xsetroot -cursor_name left_ptr
+
+# Required configuration for Watch Music
 pkill -f '/data/data/com.termux/files/home/.config/eww/scripts/watch_music.sh'
 
 # Run awesome Desktop

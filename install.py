@@ -33,8 +33,8 @@ def main():
 
     # 3. Deploy configurations (.config)
     config_items = [
-        "audacious", "awesome", "cava", "eww", "flameshot", 
-        "gtk-3.0", "neofetch", "picom", "rofi", "Thunar", 
+        "audacious", "awesome", "cava", "eww", "flameshot",
+        "gtk-3.0", "neofetch", "picom", "rofi", "Thunar",
         "Wallpaper", "xfce4", "starship.toml"
     ]
     for item in config_items:
@@ -52,10 +52,15 @@ def main():
             run(f"chmod +x {BIN_PATH}/{exe}")
 
     # 5. Fonts and Appearance
-    
+
     # Mover xfce4 directamente desde la carpeta fonts del repositorio
     if os.path.exists("fonts/xfce4"):
         run("mv fonts/xfce4 ~/.local/share/")
+
+    # Mover el tema de cursor a la ruta de iconos del sistema Termux
+    if os.path.exists("fonts/capitaine-cursors-light"):
+        run("mkdir -p $PREFIX/share/icons")
+        run("mv fonts/capitaine-cursors-light $PREFIX/share/icons/")
 
     # Copiar el resto de las fuentes (xfce4 ya no estará aquí)
     if os.path.isdir("fonts"):
@@ -80,9 +85,9 @@ def main():
 
     # 7. Shell Configurations (Cargo PATH and Starship)
     print(f"{Colors.BLUE}[+] Setting up Shell environment...{Colors.RESET}")
-    
+
     cargo_export = 'export PATH=$PATH:$HOME/.cargo/bin'
-    
+
     # List of configuration files to update
     shell_configs = [
         os.path.expanduser("~/.bashrc"),
@@ -90,12 +95,12 @@ def main():
         "/data/data/com.termux/files/usr/etc/bash.bashrc",
         "/data/data/com.termux/files/usr/etc/zshrc"
     ]
-    
+
     for rc in shell_configs:
         if os.path.exists(rc):
             # Cargo setup
             run(f"grep -qxF '# CARGO' {rc} || echo '\n# CARGO\n{cargo_export}' >> {rc}")
-            
+
             # Starship setup (checks if file name is bash or zsh to use correct init)
             if "bash" in rc:
                 run(f"grep -qxF '# STARSHIP' {rc} || echo '\n# STARSHIP\neval \"$(starship init bash)\"' >> {rc}")
@@ -107,7 +112,7 @@ def main():
     run("mkdir -p ~/.config/fish")
     fish_cargo = 'set -gx PATH $PATH $HOME/.cargo/bin'
     fish_starship = 'starship init fish | source'
-    
+
     if os.path.exists(fish_config):
         run(f"grep -qxF '# CARGO' {fish_config} || echo '\n# CARGO\n{fish_cargo}' >> {fish_config}")
         run(f"grep -qxF '# STARSHIP' {fish_config} || echo '\n# STARSHIP\n{fish_starship}' >> {fish_config}")
