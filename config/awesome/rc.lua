@@ -81,6 +81,13 @@ awful.spawn.with_shell("if [ -f ~/.fehbg ]; then bash ~/.fehbg; else feh --bg-fi
 awful.spawn.with_shell("picom &")
 awful.spawn.with_shell("pgrep -x eww || eww daemon &")
 awful.spawn.with_shell("sleep 2 && eww open bar")
+awful.spawn.with_shell([[
+    echo "Xcursor.theme: capitaine-cursors-light" > ~/.Xresources
+    echo "Xcursor.size: 32" >> ~/.Xresources
+    export XCURSOR_SIZE=32
+    xrdb -merge ~/.Xresources
+    xsetroot -cursor_name left_ptr
+]])
 
 -- =========================================
 -- LAYOUTS

@@ -29,12 +29,6 @@ fi
 export GALLIUM_DRIVER=virpipe
 export MESA_GL_VERSION_OVERRIDE=4.0
 
-# Cursor settings
-echo "Xcursor.size: 32" > ~/.Xresources
-xrdb -merge ~/.Xresources
-export XCURSOR_SIZE=32
-xsetroot -cursor_name left_ptr
-
 # Required configuration for Watch Music
 pkill -f '/data/data/com.termux/files/home/.config/eww/scripts/watch_music.sh'
 
