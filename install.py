@@ -21,7 +21,7 @@ def main():
     # 1. Installation of Dependencies
     apps = " audacious cava eww rofi awesome thunar picom neofetch feh starship kitty lsd w3m"
     print(f"{Colors.BLUE}[+] Installing necessary packages...{Colors.RESET}")
-    run("pkg install x11-repo python python-pip git wget curl termux-x11-nightly pulseaudio firefox tur-repo zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 jq lxappearance neovim-nightly rust chafa flameshot pygobject -y")
+    run("pkg install x11-repo python python-pip git wget curl termux-x11-nightly pulseaudio firefox tur-repo zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 jq lxappearance neovim-nightly rust chafa flameshot pygobject xorg-xsetroot -y")
     run(f"pkg install {apps} -y")
     run("pip install pyxdg pywal")
     run("cargo install pokeget")
@@ -131,4 +131,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n{Colors.PINK}[!] Installation cancelled {Colors.RESET}")
         sys.exit(0)
-s
+
