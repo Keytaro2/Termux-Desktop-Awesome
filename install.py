@@ -83,10 +83,12 @@ def main():
         run(f"cp {font_src} ~/.termux/font.ttf")
         run("termux-reload-settings")
 
-    # 7. Shell Configurations (Cargo PATH and Starship)
+    # 7. Shell Configurations (Cargo PATH, XCURSOR and Starship)
     print(f"{Colors.BLUE}[+] Setting up Shell environment...{Colors.RESET}")
 
     cargo_export = 'export PATH=$PATH:$HOME/.cargo/bin'
+    xcursor_theme_export = 'export XCURSOR_THEME="capitaine-cursors-light"'
+    xcursor_size_export = 'export XCURSOR_SIZE=32'
 
     # List of configuration files to update
     shell_configs = [
@@ -100,6 +102,9 @@ def main():
         if os.path.exists(rc):
             # Cargo setup
             run(f"grep -qxF '# CARGO' {rc} || echo '\n# CARGO\n{cargo_export}' >> {rc}")
+            
+            # XCURSOR setup
+            run(f"grep -qxF '# XCURSOR' {rc} || echo '\n# XCURSOR\n{xcursor_theme_export}\n{xcursor_size_export}' >> {rc}")
 
             # Starship setup (checks if file name is bash or zsh to use correct init)
             if "bash" in rc:
@@ -111,10 +116,13 @@ def main():
     fish_config = os.path.expanduser("~/.config/fish/config.fish")
     run("mkdir -p ~/.config/fish")
     fish_cargo = 'set -gx PATH $PATH $HOME/.cargo/bin'
+    fish_xcursor_theme = 'set -gx XCURSOR_THEME "capitaine-cursors-light"'
+    fish_xcursor_size = 'set -gx XCURSOR_SIZE 32'
     fish_starship = 'starship init fish | source'
 
     if os.path.exists(fish_config):
         run(f"grep -qxF '# CARGO' {fish_config} || echo '\n# CARGO\n{fish_cargo}' >> {fish_config}")
+        run(f"grep -qxF '# XCURSOR' {fish_config} || echo '\n# XCURSOR\n{fish_xcursor_theme}\n{fish_xcursor_size}' >> {fish_config}")
         run(f"grep -qxF '# STARSHIP' {fish_config} || echo '\n# STARSHIP\n{fish_starship}' >> {fish_config}")
 
 if __name__ == "__main__":
@@ -123,3 +131,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n{Colors.PINK}[!] Installation cancelled {Colors.RESET}")
         sys.exit(0)
+s
