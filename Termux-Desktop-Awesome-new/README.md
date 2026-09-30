@@ -43,15 +43,15 @@
   - **🐧 OVERVIEW:** Open apps with live previews.
   - **💻 CATPPUCCIN MOCHA THEME:** Choose your wallpaper with Ctrl + K. It's that simple, enjoy!
   - **💾 TRANSPARENT INSTALLATION:** Every command is shown in the terminal before it runs, so you know exactly what is happening.
-  - **🔒 LOCK MODE:** This mode is enabled by default to prevent accidental layout changes. To unlock the layout and move the Eww widgets, press Ctrl + G. A notification will appear to confirm the change.
+  - **🔒 LOCK MODE:** This mode is enabled by default to prevent accidental layout changes. To unlock the layout and move the windows,, press Ctrl + G. A notification will appear to confirm the change.
 
     <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
 
-    Once unlocked, you can move the widgets using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. To lock the layout again, press Ctrl + G. The layout will lock, and you will receive another notification.
+    Once unlocked, you can move the windows, using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. To lock the layout again, press Ctrl + G. The layout will lock, and you will receive another notification.
 
     <img src="https://github.com/user-attachments/assets/7803cae9-d7be-4d64-9d19-17fbbb96d139" alt="image" width="200" />
     
-  - **🖱️ MOUSE MODE:** Disabled by default. When enabled, it allows you to move Eww widgets and other floating programs using your mouse. To toggle it on or off, press Ctrl + V; a notification will appear to confirm the status.
+  - **🖱️ MOUSE MODE:** Disabled by default. When enabled, it allows you to  move the windows, and other floating programs using your mouse. To toggle it on or off, press Ctrl + V; a notification will appear to confirm the status.
 
     <img src="https://github.com/user-attachments/assets/456f07c5-b40a-4482-83ef-5b6757c0eb97" alt="image" width="200" />
 
