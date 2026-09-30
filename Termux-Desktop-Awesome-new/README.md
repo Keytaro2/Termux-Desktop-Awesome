@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>【 Termux-Desktop-Awesome 】</h1>
+    <h1>【 Termux-Desktop-Awesome-New 】</h1>
     <h3></h3>
 </div>
 
