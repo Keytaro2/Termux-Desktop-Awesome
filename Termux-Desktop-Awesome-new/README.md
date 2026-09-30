@@ -248,7 +248,6 @@ su -c getprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs
 
 
 <div align="center">
-    <h2>• Screenshots •</h2>
     <h3></h3>
 </div>
 
@@ -285,7 +284,7 @@ Widget system: Termux + Awesome + Eww
 ---
 
 <div align="center">
-    <h2>• Other Screenshots •</h2>
+    <h2>• Screenshots •</h2>
 </div> 
 
 <img src="https://github.com/user-attachments/assets/115185e7-a23d-40ed-ae81-f7621e41a388" width="90%" alt="Termux Desktop Screenshot">
