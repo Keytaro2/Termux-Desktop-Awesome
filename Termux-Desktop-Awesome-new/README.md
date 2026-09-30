@@ -102,6 +102,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 | `ctrl` + `k` | Open the wallpaper changer program. |
 | `ctrl` + `n` | Close the wallpaper changer program. |
 | `alt` + `/` | Take a screenshot. |
+| `alt` + `-` | Take a screenshot of a selected area. |
 | `ctrl` + `v` | Enable or disable Mouse Mode. |
 | `ctrl` + `g`  | Toggle Lock Mode (lock/unlock widgets). |
 | `alt` + `r` | Restart Awesome. |
