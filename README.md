@@ -107,6 +107,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 | `ctrl` + `k` | Open the wallpaper changer program. |
 | `ctrl` + `n` | Close the wallpaper changer program. |
 | `alt` + `/` | Take a screenshot. |
+| `alt` + `-` | Take a screenshot of a selected area. |
 | `ctrl` + `z`  | Toggle between profiles. |
 | `ctrl` + `x` | Go back to previous profile. |
 | `ctrl` + `v` | Enable or disable Mouse Mode. |
