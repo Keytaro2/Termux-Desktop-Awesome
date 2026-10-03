@@ -297,7 +297,21 @@ Widget system: Awesome Termux
 
 <img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
 
+#### Simple Powermenu
 
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+
+#### Right-Click Simple Desktop Menu
+
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+
+#### Simple but Fully Functional/Useful Vertical-Left Bar
+
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+
+#### Simple but useful systray popup (triggered with systray toggler button in bar)
+
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
 
 <div align="center">
     <h2>• inspirations/copying •</h2>
