@@ -276,13 +276,12 @@ Widget system: Termux + Awesome + Eww
 
 ---
 
-### Shutdown menu
+### The Desktop
 
 
 |  |  |
 |:---|:---------------|
-|  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b2ae10ea-af2c-489b-97ed-573c8e6f0b1e" /> |  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d8d1e1ee-5119-4ddc-bf5a-a2288e8eea66" /> |
-|  |  |
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
 
 #### Notification system
 
