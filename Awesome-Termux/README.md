@@ -281,8 +281,7 @@ Widget system: Termux + Awesome + Eww
 
 #### Beautiful and Fully Functional Dashboard
 
-
-<img src="https://github.com/user-attachments/assets/511d6cec-eef2-4677-b745-cbfbd7a519c9" alt="Notification system">
+<img src="https://github.com/user-attachments/assets/2a2dcba1-ca30-471a-8422-d8fd90c81c74" alt="Notification system">
 
 #### Program to change wallpaper
 
