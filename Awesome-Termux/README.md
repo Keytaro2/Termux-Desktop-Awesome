@@ -277,10 +277,6 @@ Widget system: Termux + Awesome + Eww
 ---
 
 ### The Desktop
-
-
-|  |  |
-|:---|:---------------|
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
 
 #### Notification system
