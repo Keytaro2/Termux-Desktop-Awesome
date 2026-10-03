@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>【 AwesomeWM Termux 】</h1>
+    <h1>【 AwesomeTermux 】</h1>
     <h3></h3>
 </div>
 
