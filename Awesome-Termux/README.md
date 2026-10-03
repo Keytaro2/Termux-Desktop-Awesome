@@ -11,7 +11,7 @@
 </div>
 
 <div align="center">
-    <h4>This is a more faithful desktop version from Alphatechnolog; enjoy it</h4>
+    <h4>✨This is a more faithful desktop version from Alphatechnolog; enjoy it✨</h4>
 </div>
 
 <div align="center">
