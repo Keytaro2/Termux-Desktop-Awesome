@@ -11,7 +11,7 @@
 
 ## 🚀 Nueva versión
 
-[👉 Ver Awesome Termux ](./Awesome-Termux/README.md)
+[👉 Ver Awesome-Termux ](./Awesome-Termux/README.md)
 
     
 </div>
