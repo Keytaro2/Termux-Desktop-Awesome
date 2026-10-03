@@ -293,9 +293,9 @@ Widget system: Awesome Termux
 
 <img src="https://github.com/user-attachments/assets/dce2f63d-4f27-409a-904c-9b57a8b4ed2c" alt="Simple Calendar">
 
-#### The notification system supports Audacious, Flameshot, Mouse mode,  Lock mode and Wallpapers.
+#### Rofi (Apps Launcher)
 
-<img src="https://github.com/user-attachments/assets/f970f283-d17e-4b68-848b-674914014a11" alt="Desktop Preview">
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
 
 
 
