@@ -295,9 +295,9 @@ Widget system: Termux + Awesome + Eww
 <img src="https://github.com/user-attachments/assets/d8f90560-4450-4121-a906-eac058aaba43" alt="Program to change wallpaper">
 
 
-#### Cava and actions
+#### Simple-Calendar
 
-<img src="https://github.com/user-attachments/assets/314c3bcc-8c74-4fb3-9c08-057d20ffac15" alt="cava and actions">
+<img src="https://github.com/user-attachments/assets/dce2f63d-4f27-409a-904c-9b57a8b4ed2c" alt="Simple Calendar">
 
 #### The notification system supports Audacious, Flameshot, Mouse mode,  Lock mode and Wallpapers.
 
