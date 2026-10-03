@@ -286,7 +286,7 @@ Widget system: Termux + Awesome + Eww
 #### Beautiful And Fully Functional Notifications Center 
 
 
-<img src="https://github.com/user-attachments/assets/d8f90560-4450-4121-a906-eac058aaba43" alt="Program to change wallpaper">
+<img src="https://github.com/user-attachments/assets/6a6b4a40-ecb1-4e8f-a878-f2c6739c7000" alt="Program to change wallpaper">
 
 
 #### Simple-Calendar
