@@ -283,7 +283,7 @@ Widget system: Termux + Awesome + Eww
 
 <img src="https://github.com/user-attachments/assets/2a2dcba1-ca30-471a-8422-d8fd90c81c74" alt="Notification system">
 
-#### Program to change wallpaper
+#### Beautiful And Fully Functional Notifications Center 
 
 
 <img src="https://github.com/user-attachments/assets/d8f90560-4450-4121-a906-eac058aaba43" alt="Program to change wallpaper">
