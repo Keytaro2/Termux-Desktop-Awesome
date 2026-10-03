@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>【 AlphaTechnolog's AwesomeWM Rice 】</h1>
+    <h1>【 AwesomeWM Rice Termux 】</h1>
     <h3></h3>
 </div>
 
