@@ -237,7 +237,7 @@ su -c getprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs
 
 
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/94a27802-cb09-4897-ab4c-99a697f38f1c" alt="illogical-impulse logo" style="float:left; width:175px;">
+    <img src="https://github.com/user-attachments/assets/6f25c18d-eccd-4efd-8aac-0709d1cf27e4" alt="illogical-impulse logo" style="float:left; width:175px;">
 </div>
 
 Widget system: Awesome Termux
