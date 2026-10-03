@@ -43,23 +43,6 @@
   - **🐧 OVERVIEW:** Open apps with live previews.
   - **💻 CATPPUCCIN MOCHA THEME:** Choose your wallpaper with Ctrl + K. It's that simple, enjoy!
   - **💾 TRANSPARENT INSTALLATION:** Every command is shown in the terminal before it runs, so you know exactly what is happening.
-  - **🔒 LOCK MODE:** This mode is enabled by default to prevent accidental layout changes. To unlock the layout and move the windows,, press Ctrl + G. A notification will appear to confirm the change.
-
-    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
-
-    Once unlocked, you can move the windows, using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. To lock the layout again, press Ctrl + G. The layout will lock, and you will receive another notification.
-
-    <img src="https://github.com/user-attachments/assets/7803cae9-d7be-4d64-9d19-17fbbb96d139" alt="image" width="200" />
-    
-  - **🖱️ MOUSE MODE:** Disabled by default. When enabled, it allows you to  move the windows, and other floating programs using your mouse. To toggle it on or off, press Ctrl + V; a notification will appear to confirm the status.
-
-    <img src="https://github.com/user-attachments/assets/456f07c5-b40a-4482-83ef-5b6757c0eb97" alt="image" width="200" />
-
-    Usage: Click and drag to move widgets. To resize them, hold Alt, click on a corner or edge, and drag. 
-
-    <img src="https://github.com/user-attachments/assets/4886a8a9-15e2-48d7-b479-c1ff47ac6bfb" alt="image" width="200" />
-
-    **Note:** Mouse Mode only works if Lock Mode is unlocked.
 
   - **🔔 NOTIFICATION SYSTEM:** This is the standout feature of this desktop! The notification system fully integrates with Mouse Mode and Lock Mode. It also displays real-time updates for:
     
@@ -97,14 +80,10 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 
 | Keys | Action |
 | :-------------------: | :---------------------------------------------------------------: |
-| `ctrl` + `w` | Close focused window. |
+| `ctrl` + `shift` + `w` | Close focused window. |
 | `ctrl` + `Enter` | Open a terminal. |
-| `ctrl` + `k` | Open the wallpaper changer program. |
-| `ctrl` + `n` | Close the wallpaper changer program. |
 | `alt` + `/` | Take a screenshot. |
 | `alt` + `-` | Take a screenshot of a selected area. |
-| `ctrl` + `v` | Enable or disable Mouse Mode. |
-| `ctrl` + `g`  | Toggle Lock Mode (lock/unlock widgets). |
 | `alt` + `r` | Restart Awesome. |
 | `alt` + `q` | Quit Awesome. |
 | `ctrl` + `d` | Run Rofi (App Launcher). |
