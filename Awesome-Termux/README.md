@@ -303,7 +303,7 @@ Widget system: Awesome Termux
 
 #### Right-Click Simple Desktop Menu
 
-<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+<img src="https://github.com/user-attachments/assets/3b60d3a0-b75d-4158-afaf-e24f049a4857" alt="Desktop Preview">
 
 #### Simple but Fully Functional/Useful Vertical-Left Bar
 
