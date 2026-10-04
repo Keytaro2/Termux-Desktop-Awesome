@@ -311,7 +311,7 @@ Widget system: Awesome Termux
 
 #### Simple but useful systray popup (triggered with systray toggler button in bar)
 
-<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+<img src="https://github.com/user-attachments/assets/eb5ca7b9-37f8-4e44-a97a-a145431d2f07" alt="Desktop Preview">
 
 <div align="center">
     <h2>• inspirations/copying •</h2>
