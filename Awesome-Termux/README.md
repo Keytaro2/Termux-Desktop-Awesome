@@ -307,7 +307,7 @@ Widget system: Awesome Termux
 
 #### Simple but Fully Functional/Useful Vertical-Left Bar
 
-<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+<img src="https://github.com/user-attachments/assets/c8097b18-8a56-4a66-b139-b99cc16a0116" alt="Desktop Preview">
 
 #### Simple but useful systray popup (triggered with systray toggler button in bar)
 
