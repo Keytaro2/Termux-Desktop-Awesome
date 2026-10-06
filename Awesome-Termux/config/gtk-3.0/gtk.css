@@ -1,0 +1,5 @@
+
+vte-terminal, VteTerminal {
+    /* Ajustado para ser más compacto y no ensanchar tanto la ventana */
+    padding: 8px 8px 8px 8px;
+}

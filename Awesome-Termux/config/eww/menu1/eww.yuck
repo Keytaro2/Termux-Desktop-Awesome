@@ -1,0 +1,90 @@
+;; ==========================================
+;; 1. MAIN MENU (MENU 1)
+;; ==========================================
+(defwindow menu1
+  :monitor 0
+  :wm-ignore true
+  :windowtype "normal"
+  :geometry (geometry
+    :width "280px"
+    :height "340px"
+    :anchor "top left")
+  :stacking "fg"
+  :focusable true
+
+  (menu-box))
+
+(defwidget menu-item [text cmd]
+  (button
+    :class "menu-item"
+    :onclick cmd
+    (box
+      :orientation "horizontal"
+      (label
+        :class "menu-label"
+        :text text))))
+
+(defwidget awesome-item []
+  (button
+    :class "menu-item"
+    ;; Reads the cached position at the moment of the click
+    :onclick "eww -c ~/.config/eww/menu1 open menu1_5 --pos $(cat ~/.cache/menu1_5_pos) --anchor 'top left' --toggle"
+    (box
+      :orientation "horizontal"
+      :space-evenly false
+      (label
+        :class "bspwm-label"
+        :text "AwesomeWM")
+      (label
+        :class "arrow"
+        :text "►"))))
+
+(defwidget menu-box []
+  (box
+    :orientation "vertical"
+    :class "menu"
+    (menu-item :text "Terminal" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; xfce4-terminal --hide-menubar &")
+    (menu-item :text "Explorer" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; thunar &")
+    (menu-item :text "Browser"  :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; firefox &")
+    (menu-item :text "Editor   " :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; kitty -e nvim &")
+    (menu-item :halign "start" :text "GUI Edit" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; mousepad &")
+    (awesome-item)))
+
+;; ==========================================
+;; 2. AWESOME SUBMENU (MENU 1.5)
+;; ==========================================
+(defwindow menu1_5
+  :monitor 0
+  :wm-ignore true
+  :windowtype "normal"
+  :geometry (geometry
+    :width "280px"
+    :height "240px"
+    :anchor "top left")
+  :stacking "fg"
+  :focusable true
+
+  (menu-box-1-5))
+
+;; Exclusive widget to align the submenu letters
+(defwidget menu-item-1-5 [text cmd]
+  (button
+    :class "menu-item"
+    :onclick cmd
+    (box
+      :orientation "horizontal"
+      :space-evenly false
+      :halign "start"
+      (label
+        :class "menu-label-1-5"
+        :xalign 0
+        :text text))))
+
+(defwidget menu-box-1-5 []
+  (box
+    :orientation "vertical"
+    :class "menu"
+    (menu-item-1-5 :text "Edit Config" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; kitty -e nvim ~/.config/awesome/rc.lua &")
+    (menu-item-1-5 :text "Edit Config (GUI)" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; mousepad ~/.config/awesome/rc.lua &")
+    (menu-item-1-5 :text "Restart" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; awesome-client 'awesome.restart()'")
+    (menu-item-1-5 :text "Close Session" :cmd "eww -c ~/.config/eww/menu1 close menu1 menu1_5; awesome-client 'awesome.quit()'")))

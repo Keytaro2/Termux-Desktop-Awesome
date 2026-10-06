@@ -1,0 +1,203 @@
+(defwindow bar
+  :monitor 0
+  :geometry (geometry
+    :x "20px"
+    :y "0px"
+    :width "90px"
+    :height "97%"
+    :anchor "left center")
+  :stacking "fg"
+  :wm-ignore false
+  :exclusive true
+
+  (bar))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SECONDARY WINDOW (TOOLTIP LAYOUT)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwindow layout_tooltip
+  :monitor 0
+  :geometry (geometry
+    :x "120px"
+    :y "-70px"
+    :width "240px"   ;; <-- Window width (previously 160px)
+    :height "52px"   ;; <-- Window height (previously 42px)
+    :anchor "left bottom")
+  :stacking "fg"
+  :wm-ignore true
+  :focusable false
+  (box
+    :space-evenly false
+    :spacing 12      ;; <-- Space between the ⓘ icon and the text
+    :halign "center"
+    :valign "center"
+    ;; Internal padding and borders
+    :style "background: rgba(2, 6, 18, 0.98); border-radius: 10px; padding: 10px 20px;"
+    (label
+      ;; ⓘ icon size (previously 15px)
+      :style "color: #7aa2f7; font-size: 18px; font-weight: bold;"
+      :text "ⓘ")
+    (label
+      ;; Text font size (previously 14px)
+      :style "color: #c0caf5; font-size: 16px; font-weight: 500;"
+      :text "Layout ${current_layout_name}")
+  )
+)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DYNAMIC (FUNCTIONAL) VARIABLES
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar current_profile "1")
+(defvar quick_settings_reveal false)
+(defvar vol_muted false)
+(defvar wifi_off false)
+(defvar layout_image "/data/data/com.termux/files/usr/share/awesome/themes/default/layouts/tilew.png")
+
+;; Dynamically gets the current layout (Tile, Floating, Max...)
+(defpoll current_layout_name :interval "1s"
+  "awesome-client 'return awful.layout.getname(awful.layout.get(mouse.screen))' | sed -n 's/.*\"\\(.*\\)\".*/\\1/p' | awk '{print toupper(substr($0,1,1)) substr($0,2)}'")
+
+
+(defpoll time_hour :interval "1s"
+  "date '+%H'")
+
+(defpoll time_minute :interval "1s"
+  "date '+%M'")
+
+(deflisten windows_list
+  "~/.config/eww/scripts/tasks.sh")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; WIDGETS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwidget launcher [icon size action]
+  (button
+    :class "launcher"
+    :style "font-size: ${size}px;"
+    :onclick action
+    icon))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; BAR LAYOUT
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defwidget bar []
+  (centerbox
+    :orientation "v"
+    :class "bar"
+
+    ;; TOP (Fixed app buttons)
+    (box
+      :orientation "v"
+      :space-evenly false
+      :spacing 20
+      :valign "start"
+
+      (launcher :icon "󱓞" :size 30 :action "rofi -show drun &")
+      (launcher :icon "" :size 25 :action "eww -c ~/.config/eww/screnshoot open --toggle screnshoot &")
+      (launcher :icon "" :size 30 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching browser, please wait...' '' && firefox &")
+      (launcher :icon "" :size 30 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' '' && xfce4-terminal --hide-menubar &")
+      (launcher :icon "" :size 20 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching explorer, please wait...' '' && thunar &")
+
+    )
+
+    ;; CENTER (Tasklist / Window list)
+    (box
+      :orientation "v"
+      :space-evenly false
+      :spacing 10
+      :halign "center"
+      :valign "center"
+
+      (literal :content windows_list)
+    )
+
+    ;; BOTTOM (System controls and profile rotation)
+    (box
+      :orientation "v"
+      :space-evenly false
+      :spacing 15
+      :valign "end"
+
+      ;; Arrow
+      (launcher :icon "" :size 23 :action "eww -c ~/.config/eww/menu2 open --toggle menu2 &")
+
+      ;; Dashboard — Now strictly opens dashboard1
+      (launcher :icon "" :size 23 :action "eww -c ~/.config/eww/dashboard1 open --toggle dashboard1 &")
+
+      ;; DROPDOWN MENU (QUICK SETTINGS)
+      (box
+        :orientation "v"
+        :space-evenly false
+        :spacing 10
+
+        (revealer
+          :transition "slideup"
+          :reveal quick_settings_reveal
+          :duration "250ms"
+
+          (box
+            :orientation "v"
+            :space-evenly false
+            :spacing 12
+
+            ;; Wi-Fi
+            (launcher
+              :icon {wifi_off ? "󰤭" : "󰤨"}
+              :size 22
+              :action "eww update wifi_off=${!wifi_off}")
+
+            ;; Volume
+            (launcher
+              :icon {vol_muted ? "󰖁" : "󰕾"}
+              :size 22
+              :action "bash ~/.config/eww/scripts/toggle_mute.sh &")
+
+            ;; Bell / Notifications — Calls the script that syncs with menu2
+            (launcher
+              :icon "󰂚"
+              :size 22
+              :action "bash ~/.config/eww/scripts/toggle_notifs.sh &")
+          )
+        )
+
+        ;; Gear Button
+        (launcher
+          :icon ""
+          :size 23
+          :action "eww update quick_settings_reveal=${!quick_settings_reveal}")
+      )
+
+      ;; CLOCK — Now strictly opens date1
+      (button
+        :class "clock-box"
+        :onclick "eww -c ~/.config/eww/date1 open --toggle date1 &"
+
+        (box
+          :orientation "v"
+
+          (label :class "hour" :text time_hour)
+          (label :class "minute" :text time_minute)
+        )
+      )
+
+      ;; Menu
+      ;; Layout Switcher (Using native Awesome images)
+      (eventbox
+        :onhover "eww open layout_tooltip"
+        :onhoverlost "eww close layout_tooltip"
+        (button
+          :class "launcher"
+          :onclick "awesome-client 'require(\"awful\").layout.inc(1)' &"
+          (image :path layout_image :image-width 22 :image-height 22)
+        )
+      )
+
+      ;; Power
+      (launcher :icon "⏻" :size 23 :action "eww -c ~/.config/eww/powermenu open --toggle powermenu &")
+    )
+  )
+)

@@ -1,0 +1,78 @@
+$orange: #e69138;
+
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font";
+}
+
+window {
+//  background-color: transparent;
+background-color: rgba(0, 0, 0, 0.6);
+}
+
+.powermenu-container {
+  background-color: transparent;
+}
+
+.avatar {
+  background-image: url("/assets/pfp.png");
+  background-size: cover;
+  background-position: center;
+  min-width: 130px;
+  min-height: 130px;
+  border-radius: 50%;
+  margin: 15px;
+  margin: 15px 15px 0px 15px;
+}
+
+.hey-label {
+  color: #c0caf5;
+  font-size: 37px;
+  font-weight: 700;
+}
+
+.name-label {
+  color: #7aa2f7;
+  font-size: 37px;
+  font-weight: 700;
+}
+
+.sub-label {
+  color: #c0caf5;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 30px;
+}
+
+.buttons-box {
+  background-color: transparent;
+}
+
+.buttons-box button {
+  background-color: rgba(26, 27, 38, 0.75);
+  min-width: 70px;
+  min-height: 70px;
+  border-radius: 100px;
+  font-size: 28px;
+  transition: 200ms;
+}
+
+.buttons-box button:hover {
+  background-color: rgba(36, 40, 59, 0.95);
+}
+
+.btn-power {
+  color: #f7768e;
+}
+
+.btn-reboot {
+  color: #e0af68;
+}
+
+.btn-logout {
+  color: #bb9af7;
+}
+
+.btn-close {
+  color: #7aa2f7;
+}

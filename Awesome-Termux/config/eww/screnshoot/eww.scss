@@ -1,0 +1,150 @@
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", "Noto Sans", sans-serif;
+}
+
+/* =====================================================
+ * MENU
+ * ===================================================== */
+
+.menu {
+  background-color: #090E20;
+  border-radius: 24px;
+  padding: 15px 20px 25px 20px;
+}
+
+/* =====================================================
+ * CLOSE BUTTON
+ * ===================================================== */
+
+.close-dot {
+  background-color: #f7768e;
+  border-radius: 10px;
+  min-width: 16px;
+  min-height: 16px;
+}
+
+/* =====================================================
+ * TITLE
+ * ===================================================== */
+
+.title {
+  color: #c0caf5;
+  font-weight: bold;
+}
+
+/* =====================================================
+ * SCREENSHOT MODE BUTTONS
+ * ===================================================== */
+
+.mode-btn {
+  background-color: #1a1b26;
+  color: #565f89;
+  border-radius: 12px;
+}
+
+.active {
+  background-color: #7aa2f7;
+  color: #1a1b26;
+}
+
+/* =====================================================
+ * DELAY
+ * ===================================================== */
+
+.delay-box {
+  background-color: #16161e;
+  border-radius: 10px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 45px;
+  min-height: 45px;
+  max-height: 45px;
+  padding: 0;
+  margin: 0;
+}
+
+/* =====================================================
+ * DELAY - NORMAL TEXT
+ * ===================================================== */
+
+.delay-display {
+  background-color: #16161e;
+  border-radius: 10px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 45px;
+  min-height: 45px;
+  max-height: 45px;
+  padding: 0;
+  margin: 0;
+}
+
+.delay-label {
+  background-color: #c0caf5;
+  color: #a9b1d6;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+/* =====================================================
+ * DELAY - INPUT
+ * ===================================================== */
+
+.delay-input {
+  background-color: #16161e;
+  color: #c0caf5;
+  border: none;
+  box-shadow: none;
+  border-radius: 10px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 45px;
+  min-height: 45px;
+  max-height: 45px;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+.delay-input entry {
+  background-color: #16161e;
+  color: #c0caf5;
+  border: none;
+  box-shadow: none;
+  font-size: 14px;
+  padding: 0;
+  margin: 0;
+}
+
+/* =====================================================
+ * GO AND ENJOY
+ * ===================================================== */
+
+.action-btn {
+  background-color: #2dd4bf;
+  color: #1a1b26;
+  border-radius: 8px;
+  font-weight: bold;
+  padding: 6px 16px;
+  font-size: 16px;
+  min-width: 110px;
+  min-height: 30px;
+  margin-bottom: 20px;
+}
+
+/* =====================================================
+ * HOVER TOOLTIP BOX (INDEPENDENT WINDOW)
+ * ===================================================== */
+
+window#screenshot_tooltip {
+  all: unset;
+  background: transparent;
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+}

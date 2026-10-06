@@ -1,0 +1,88 @@
+configuration {
+    modi: "drun,run";
+    show-icons: true;
+    icon-theme: "Papirus";
+    drun-display-format: "{name}";
+}
+
+@theme "/dev/null"
+
+* {
+    bg: rgba(2, 6, 18, 0.98);
+    bg-alt: #090E20;
+    fg: #c0caf5;
+    fg-selected: #c0caf5;
+}
+
+window {
+    width: 650px;
+    background-color: @bg;
+    border: 0px;
+    border-radius: 12px;
+    padding: 20px;
+    children: [ mainbox ];
+}
+
+mainbox {
+    background-color: transparent;
+    children: [ inputbar, listview ];
+    spacing: 20px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius: 8px;
+    padding: 12px 15px;
+    children: [ prompt, entry ];
+}
+
+prompt {
+    enabled: false;
+}
+
+entry {
+    background-color: transparent;
+    text-color: @fg-selected;
+    cursor: text;
+    placeholder: "Search";
+    placeholder-color: #5b6582;
+}
+
+listview {
+    columns: 4;
+    lines: 3;
+    layout: vertical;
+    spacing: 15px;
+    cycle: true;
+    dynamic: true;
+    background-color: transparent;
+}
+
+element {
+    background-color: transparent;
+    text-color: @fg;
+    orientation: vertical;
+    padding: 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+element-icon {
+    size: 48px;
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    background-color: transparent;
+}
+
+element-text {
+    background-color: transparent;
+    text-color: inherit;
+    horizontal-align: 0.5;
+    vertical-align: 0.5;
+    margin: 10px 0px 0px 0px;
+}
+
+element selected {
+    background-color: @bg-alt;
+    text-color: @fg-selected;
+}

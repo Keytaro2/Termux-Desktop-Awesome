@@ -1,0 +1,48 @@
+(defvar show_term false)
+(defvar show_thunar false)
+(defvar show_firefox false)
+(defvar show_audacious false)
+(defvar show_flameshot false)
+(defvar show_notif false)
+;; Instead of defvar, we use defpoll so Eww watches scrcpy every second
+(defpoll show_scrcpy :interval "1s" "pgrep scrcpy > /dev/null && echo true || echo false")
+
+
+(defwindow menu2
+    :monitor 0
+    :geometry (geometry :x "-885px" :y "160px" :width "280px" :height "210px" :anchor "center")
+    :windowtype "normal"
+    :wm-ignore true
+    (menu-content))
+
+(defwidget menu-content []
+    (box :class "menu-box"
+         :orientation "v"
+         :space-evenly false
+         :hexpand true   
+         :vexpand true   
+         
+         (box :orientation "v" 
+              :space-evenly false 
+              :halign "start"  
+              :valign "start"  
+              :vexpand true
+              :spacing 20      ;; <-- VERTICAL spacing between the first and second row
+              
+              ;; ROW 1: First 5 icons
+              (box :class "icons-row" :orientation "h" :halign "start" :spacing 20  ;; <-- HORIZONTAL spacing between icons
+                   (label :text "" :visible show_term :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #a8e8c0;")
+                   (label :text "󰝰" :visible show_thunar :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #f2d68f;")
+                   (label :text "󰈹" :visible show_firefox :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ff9e64;")
+                   (label :text "󰝚" :visible show_audacious :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #c678dd;")
+                   (label :text "󰹑" :visible show_flameshot :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ed6a7f;")
+              )
+
+              ;; ROW 2: Last 2 icons
+              (box :class "icons-row" :orientation "h" :halign "start" :spacing 20  ;; <-- HORIZONTAL spacing between icons
+                   (label :text "󰂚" :visible show_notif :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #61afef;")
+                   (label :text "󰻃" :visible show_scrcpy :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ff5555;")
+              )
+         )
+    )
+)

@@ -1,0 +1,19 @@
+* {
+    all: unset;
+}
+
+/* Transparent system background */
+window {
+    background-color: transparent;
+}
+
+/* Your original background always visible */
+.menu-box {
+    background-color: #090E20; 
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.icons-box {
+    background-color: transparent;
+}

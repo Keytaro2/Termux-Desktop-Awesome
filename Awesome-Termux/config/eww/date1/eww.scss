@@ -1,0 +1,36 @@
+.cal-box {
+    background-color: #090E20;
+    border: 0;
+    padding: 15px;
+}
+
+/* Style to unite June and 2026 */
+.header-box {
+    color: #7aa2f7;
+    font-weight: bold;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    margin-bottom: 10px;
+}
+
+calendar {
+    background-color: transparent;
+    color: #c0caf5;
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    padding: 10px;
+    border: 0;
+}
+
+calendar.button {
+    color: transparent;
+}
+
+calendar.highlight {
+    color: #2dd4bf;
+    font-weight: bold;
+}
+
+calendar:selected {
+    background-color: #2dd4bf;
+    color: #090E20;
+    border-radius: 50px;
+}

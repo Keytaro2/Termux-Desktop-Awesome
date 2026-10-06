@@ -1,0 +1,14 @@
+[Configuration]
+ColorForegroundUseDefault=FALSE
+ColorBackgroundUseDefault=FALSE
+ColorScheme=Catppuccin Mocha
+ColorBackground=#090E20
+ColorForeground=#cdd6f4
+ColorCursor=#f5e0dc
+ColorPalette=#45475a;#f38ba8;#a6e3a1;#f9e2af;#89b4fa;#cba6f7;#94e2d5;#bac2de;#585b70;#f38ba8;#a6e3a1;#f9e2af;#89b4fa;#cba6f7;#94e2d5;#a6adc8
+FontName=JetBrainsMono Nerd Font 15
+MiscAlwaysShowTabs=FALSE
+MiscToolbarVisible=FALSE
+MiscBordersDefault=FALSE
+MiscMenubarVisible=FALSE
+ScrollingBar=DISPLAY_OFF

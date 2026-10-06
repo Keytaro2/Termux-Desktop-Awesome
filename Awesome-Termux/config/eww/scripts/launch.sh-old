@@ -1,0 +1,39 @@
+#!/bin/bash
+
+DIR="$HOME/.config/eww/menu1"
+
+# =========================================
+# OBTENER POSICIÓN DEL CURSOR
+# =========================================
+X="${1:-0}"
+Y="${2:-0}"
+
+# =========================================
+# CALCULAR POSICIÓN DEL SUBMENÚ
+# =========================================
+SUB_X=$((X + 290))
+SUB_Y=$((Y + 250))
+
+# Guardar la posición en archivo temporal (caché)
+mkdir -p ~/.cache
+echo "${SUB_X}x${SUB_Y}" > ~/.cache/menu1_5_pos
+
+# =========================================
+# VERIFICAR DEMONIO DE EWW
+# =========================================
+if ! eww -c "$DIR" ping &>/dev/null; then
+    eww -c "$DIR" daemon &
+    sleep 0.5
+fi
+
+# =========================================
+# CERRAR MENÚS PREVIOS
+# =========================================
+eww -c "$DIR" close menu1 menu1_5 2>/dev/null
+
+# =========================================
+# ABRIR MENÚ PRINCIPAL
+# =========================================
+eww -c "$DIR" open menu1 \
+    --pos "${X}x${Y}" \
+    --anchor "top left"
