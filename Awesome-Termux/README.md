@@ -272,7 +272,7 @@ Widget system: Awesome Termux
     <h2>• Screenshots •</h2>
 </div> 
 
-<img src="https://github.com/user-attachments/assets/75bbb710-03f6-4b81-8d9c-5155d7ef5cfd" width="90%" alt="Termux Desktop Screenshot">
+<img width="1920" height="1080" alt="image"  src="https://github.com/user-attachments/assets/75bbb710-03f6-4b81-8d9c-5155d7ef5cfd">
 
 ---
 
