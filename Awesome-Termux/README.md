@@ -299,7 +299,7 @@ Widget system: Awesome Termux
 
 #### Simple Powermenu
 
-<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
+<img src="https://github.com/user-attachments/assets/9562992a-139c-4267-876d-d0c05932e326" alt="Desktop Preview">
 
 #### Right-Click Simple Desktop Menu
 
