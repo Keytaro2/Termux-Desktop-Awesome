@@ -272,12 +272,12 @@ Widget system: Awesome Termux
     <h2>• Screenshots •</h2>
 </div> 
 
-<img width="1920" height="1080" alt="image"  src="https://github.com/user-attachments/assets/75bbb710-03f6-4b81-8d9c-5155d7ef5cfd">
+<img  src="https://github.com/user-attachments/assets/75bbb710-03f6-4b81-8d9c-5155d7ef5cfd">
 
 ---
 
 ### The Desktop
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
+<img src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
 
 #### Beautiful and Fully Functional Dashboard
 
@@ -299,7 +299,7 @@ Widget system: Awesome Termux
 
 #### Simple Powermenu
 
-<img width="1920" height="1080" alt="image"  src="https://github.com/user-attachments/assets/9562992a-139c-4267-876d-d0c05932e326" alt="Desktop Preview">
+<img  src="https://github.com/user-attachments/assets/9562992a-139c-4267-876d-d0c05932e326" alt="Desktop Preview">
 
 #### Right-Click Simple Desktop Menu
 
