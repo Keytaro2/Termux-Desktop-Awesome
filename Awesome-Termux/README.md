@@ -72,7 +72,7 @@
    - **One-Line Installation**
 
 ```bash
-apt update && apt upgrade -y && apt install git wget python python3 python-pip x11-repo -y && git clone https://github.com/Keytaro2/Termux-Desktop-Awesome/Awesome-Termux.git && cd Termux-Desktop-Awesome/Awesome-Termux && python3 install.py && ./startawesome_termux.sh
+apt update && apt upgrade -y && apt install git wget python python3 python-pip x11-repo -y && git clone https://github.com/Keytaro2/Termux-Desktop-Awesome.git && cd Termux-Desktop-Awesome/Awesome-Termux && python3 install.py && ./startawesome_termux.sh
 ```
 
 
