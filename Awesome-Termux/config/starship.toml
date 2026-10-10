@@ -1,0 +1,41 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+add_newline = false
+
+# Nota cómo cambiamos $directory por ${custom.folder}
+format = "$character${custom.folder}$git_branch$git_status "
+
+[character]
+success_symbol = "[󰊠 ](fg:#a8e8c0)"
+error_symbol = "[󰊠 ](fg:#F2B8B5)"
+
+# CONECTAMOS CON TU NUEVO SCRIPT
+[custom.folder]
+command = "bash ~/.config/folder_icon.sh"
+when = "true"
+style = "bold fg:#7BD0FF"
+format = "[$output]($style)"
+
+[git_branch]
+symbol = ""
+style = "fg:#F07FB2"
+format = '[ $symbol $branch]($style)'
+
+[git_status]
+style = "fg:#F07FB2"
+format = ' [$all_status$ahead_behind]($style)'
+
+[nodejs]
+symbol = ""
+style = "fg:#7BD0FF"
+format = '[ $symbol ($version) ]($style)'
+
+[bun]
+symbol = ""
+style = "fg:#7BD0FF"
+format = '[ $symbol ($version) ]($style)'
+
+[rust]
+symbol = ""
+style = "fg:#F4D48A"
+format = '[ $symbol ($version) ]($style)'
+
