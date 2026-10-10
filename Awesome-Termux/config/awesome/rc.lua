@@ -10,7 +10,6 @@ require("awful.autofocus")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 local naughty = require("naughty")
-local rubato = require("lib.rubato")
 
 -- =========================================
 -- HELPER: Identify specific applications ignoring case
@@ -75,7 +74,7 @@ awful.spawn.with_shell("picom &")
 awful.spawn.with_shell("pgrep -x eww || eww daemon &")
 awful.spawn.with_shell("sleep 2 && eww open bar")
 awful.spawn.with_shell([[
-    echo "Xcursor.theme: capitaine-cursors-light" > ~/.Xresources
+    echo "Xcursor.theme: Bibata-Material-Cloud-Light" > ~/.Xresources
     echo "Xcursor.size: 32" >> ~/.Xresources
     export XCURSOR_SIZE=32
     xrdb -merge ~/.Xresources
