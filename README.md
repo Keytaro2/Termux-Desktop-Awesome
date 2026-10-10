@@ -11,7 +11,7 @@
 
 ## 🚀 Remake
 
-[👉 Ver Awesome-Termux ](./Awesome-Termux/README.md)
+[👉 See Awesome-Termux ](./Awesome-Termux/README.md)
 
     
 </div>
