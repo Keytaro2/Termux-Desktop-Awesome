@@ -15,21 +15,21 @@ def run(cmd):
 
 def ask_yes_no(question):
     while True:
-        answer = input(f"{Colors.YELLOW}{question} (si/no): {Colors.RESET}").strip().lower()
-        if answer in ("si", "sí", "s", "yes", "y"):
+        answer = input(f"{Colors.YELLOW}{question} (yes/no): {Colors.RESET}").strip().lower()
+        if answer in ("yes", "y"):
             return True
         if answer in ("no", "n"):
             return False
-        print("Responde 'si' o 'no'.")
+        print("Please answer 'yes' or 'no'.")
 
 def main():
     run("clear")
     print(f"{Colors.PINK}=== Termux-Desktop-Awesome Installer ==={Colors.RESET}")
 
-    # Preguntar al inicio sobre pokeget
-    print(f"{Colors.YELLOW}[!] Advertencia: 'pokeget' se compila con cargo y es un paquete PESADO.")
-    print(f"    Puede tardar mucho y consumir bastante almacenamiento y bateria.{Colors.RESET}")
-    install_pokeget = ask_yes_no("¿Quieres instalar pokeget?")
+    # Ask at the beginning about pokeget
+    print(f"{Colors.YELLOW}[!] Warning: 'pokeget' compiles with cargo and is a HEAVY package.")
+    print(f"    It may take a long time and consume a lot of storage and battery.{Colors.RESET}")
+    install_pokeget = ask_yes_no("Do you want to install pokeget?")
 
     print(f"{Colors.BLUE}[+] Preparing the environment...... {Colors.RESET}")
     sleep(1)
@@ -45,7 +45,7 @@ def main():
         print(f"{Colors.BLUE}[+] Installing pokeget...{Colors.RESET}")
         run("cargo install pokeget")
     else:
-        print(f"{Colors.BLUE}[+] Omitiendo pokeget.{Colors.RESET}")
+        print(f"{Colors.BLUE}[+] Skipping pokeget.{Colors.RESET}")
 
     # 2. Creating base directories
     run("mkdir -p ~/.config")
@@ -66,7 +66,7 @@ def main():
     if os.path.exists("config/folder_icon.sh"):
         run("chmod +x ~/.config/folder_icon.sh")
 
-    # Copiar layouts de awesome al tema default
+    # Copy awesome layouts to default theme
     layouts_src = "config/awesome/layouts"
     if os.path.isdir(layouts_src):
         run("mkdir -p $PREFIX/share/awesome/themes/default/layouts")
@@ -83,16 +83,16 @@ def main():
 
     # 5. Fonts and Appearance
 
-    # Mover xfce4 directamente desde la carpeta fonts del repositorio
+    # Move xfce4 directly from the repository's fonts folder
     if os.path.exists("fonts/xfce4"):
         run("mv fonts/xfce4 ~/.local/share/")
 
-    # Mover el tema de cursor a la ruta de iconos de Termux
+    # Move cursor theme to Termux icons path
     if os.path.exists("fonts/Bibata-Material-Cloud-Light"):
         run("mkdir -p $PREFIX/share/icons")
         run("mv fonts/Bibata-Material-Cloud-Light $PREFIX/share/icons/")
 
-    # Copiar el resto de las fuentes (xfce4 y el cursor ya no estaran aqui)
+    # Copy the remaining fonts (xfce4 and cursor will no longer be here)
     if os.path.isdir("fonts"):
         run("cp -r fonts ~/.local/share/")
         run("fc-cache -fv > /dev/null")
@@ -155,4 +155,3 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n{Colors.PINK}[!] Installation cancelled {Colors.RESET}")
         sys.exit(0)
-
