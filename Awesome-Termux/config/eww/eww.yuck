@@ -99,7 +99,7 @@
       (launcher :icon "󱓞" :size 30 :action "rofi -show drun &")
       (launcher :icon "" :size 25 :action "eww -c ~/.config/eww/screnshoot open --toggle screnshoot &")
       (launcher :icon "" :size 30 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching browser, please wait...' '' && firefox &")
-      (launcher :icon "" :size 30 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' '' && xfce4-terminal --hide-menubar &")
+      (launcher :icon "" :size 30 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' '' && xfce4-terminal --hide-menubar --working-directory=$HOME &")
       (launcher :icon "" :size 20 :action "bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching explorer, please wait...' '' && thunar &")
 
     )

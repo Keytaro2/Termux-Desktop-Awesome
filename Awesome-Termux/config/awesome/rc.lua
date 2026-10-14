@@ -55,7 +55,7 @@ end
 -- =========================================
 -- VARIABLES
 -- =========================================
-terminal = "xfce-terminal --hide-menubar"
+terminal = "xfce-terminal --hide-menubar --working-directory=$HOME"
 modkey = "Mod4"
 
 -- =========================================
@@ -104,7 +104,7 @@ end)
 globalkeys = gears.table.join(
     awful.key({ "Control" }, "Return", function ()
         awful.spawn.with_shell("bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' ''")
-        awful.spawn("xfce4-terminal --hide-menubar")
+        awful.spawn("xfce4-terminal --hide-menubar --working-directory=$HOME")
     end),
 
     awful.key({ "Mod1" }, "r", awesome.restart),
