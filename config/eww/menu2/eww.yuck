@@ -1,95 +1,48 @@
+(defvar show_term false)
+(defvar show_thunar false)
+(defvar show_firefox false)
+(defvar show_audacious false)
+(defvar show_flameshot false)
+(defvar show_notif false)
+;; Instead of defvar, we use defpoll so Eww watches scrcpy every second
+(defpoll show_scrcpy :interval "1s" "pgrep scrcpy > /dev/null && echo true || echo false")
+
+
 (defwindow menu2
-  :monitor 0
-  :wm-ignore false
-  :windowtype "normal"
-  :geometry (geometry
-    :x "-210px"
-    :y "100px"
-    :width "280px"
-    :height "340px"
-    :anchor "center center")
-  :stacking "fg"
-  :focusable true
+    :monitor 0
+    :geometry (geometry :x "-885px" :y "160px" :width "280px" :height "210px" :anchor "center")
+    :windowtype "normal"
+    :wm-ignore true
+    (menu-content))
 
-  (menu-box))
+(defwidget menu-content []
+    (box :class "menu-box"
+         :orientation "v"
+         :space-evenly false
+         :hexpand true   
+         :vexpand true   
+         
+         (box :orientation "v" 
+              :space-evenly false 
+              :halign "start"  
+              :valign "start"  
+              :vexpand true
+              :spacing 20      ;; <-- VERTICAL spacing between the first and second row
+              
+              ;; ROW 1: First 5 icons
+              (box :class "icons-row" :orientation "h" :halign "start" :spacing 20  ;; <-- HORIZONTAL spacing between icons
+                   (label :text "" :visible show_term :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #a8e8c0;")
+                   (label :text "󰝰" :visible show_thunar :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #f2d68f;")
+                   (label :text "󰈹" :visible show_firefox :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ff9e64;")
+                   (label :text "󰝚" :visible show_audacious :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #c678dd;")
+                   (label :text "󰹑" :visible show_flameshot :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ed6a7f;")
+              )
 
-(defwidget menu-item [icon icon-class text cmd]
-  (button
-    :class "menu-item"
-    :onclick cmd
-
-    (box
-      :orientation "horizontal"
-      :space-evenly false
-
-      ;; Fixed-size box for the icon (ensures perfect text alignment)
-      (box :width 45 :halign "start"
-        (label :class "menu-icon ${icon-class}" :text icon))
-
-      ;; The text takes up the rest of the space (:hexpand true)
-      (label :class "menu-label" :halign "start" :hexpand true :text text))))
-
-(defwidget menu-item-arrow [icon icon-class text cmd]
-  (button
-    :class "menu-item"
-    :onclick cmd
-
-    (box
-      :orientation "horizontal"
-      :space-evenly false
-
-      (box :width 45 :halign "start"
-        (label :class "menu-icon ${icon-class}" :text icon))
-
-      (label :class "menu-label" :halign "start" :hexpand true :text text)
-      (label :class "arrow" :halign "end" :text "▶"))))
-
-(defwidget menu-box []
-  (box
-    :orientation "vertical"
-    :class "menu"
-    :space-evenly false
-
-    (label :class "menu-header" :text "Search" :halign "start")
-
-    (box :class "separator")
-
-    (menu-item
-      :icon "󰈹"
-      :icon-class "icon-browser"
-      :text "Web Browser"
-      :cmd "firefox &")
-
-    (menu-item
-      :icon "󰉋"
-      :icon-class "icon-folder"
-      :text "File Manager"
-      :cmd "thunar &")
-
-    (box :class "separator")
-
-    (menu-item
-      :icon ""
-      :icon-class "icon-term"
-      :text "Launch Terminal"
-      :cmd "xfce4-terminal --hide-menubar &")
-
-    (menu-item-arrow
-      :icon ""
-      :icon-class "icon-fav"
-      :text "Favorites"
-      :cmd "rofi -show drun")
-
-    (box :class "separator")
-
-    (menu-item-arrow
-      :icon "󰖲"
-      :icon-class "icon-openbox"
-      :text "Openbox"
-      :cmd "")
-
-    (menu-item-arrow
-      :icon "⏻"
-      :icon-class "icon-exit"
-      :text "Exit"
-      :cmd "pkill -9 awesome && pkill -9 termux-x11")))
+              ;; ROW 2: Last 2 icons
+              (box :class "icons-row" :orientation "h" :halign "start" :spacing 20  ;; <-- HORIZONTAL spacing between icons
+                   (label :text "󰂚" :visible show_notif :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #61afef;")
+                   (label :text "󰻃" :visible show_scrcpy :style "font-family: 'JetBrainsMono Nerd Font'; font-size: 34px; color: #ff5555;")
+              )
+         )
+    )
+)

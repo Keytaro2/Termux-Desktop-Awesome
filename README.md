@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>【 Termux-Desktop-Awesome 】</h1>
+    <h1>【 AwesomeTermux 】</h1>
     <h3></h3>
 </div>
 
@@ -8,13 +8,12 @@
   <a href="https://github.com/Keytaro2/Termux-Desktop-Awesome/stargazers"><img alt="Stars" src="https://img.shields.io/github/stars/Keytaro2/Termux-Desktop-Awesome?style=for-the-badge&logo=andela&logoColor=c0caf5&labelColor=1E202B&color=7aa2f7"></a>
   <img alt="Repo Size" src="https://img.shields.io/github/repo-size/Keytaro2/Termux-Desktop-Awesome?style=for-the-badge&logo=protondrive&logoColor=c0caf5&labelColor=1E202B&color=7aa2f7&label=SIZE"><br>
   <a href="https://www.reddit.com/u/Vgloomy/s/nG9DCBad5p"><img alt="Reddit" src="https://img.shields.io/badge/reddit-13-7aa2f7?style=for-the-badge&logo=reddit&logoColor=c0caf5&labelColor=1E202B"></a>
-
-## 🚀 Remake
-
-[👉 See Awesome-Termux ](./Awesome-Termux/README.md)
-
-    
 </div>
+
+<div align="center">
+    <h4>✨This is a more faithful desktop version from Alphatechnolog; enjoy it✨</h4>
+</div>
+
 <div align="center">
     <h2>• overview •</h2>
     <h3></h3>
@@ -48,23 +47,6 @@
   - **🐧 OVERVIEW:** Open apps with live previews.
   - **💻 CATPPUCCIN MOCHA THEME:** Choose your wallpaper with Ctrl + K. It's that simple, enjoy!
   - **💾 TRANSPARENT INSTALLATION:** Every command is shown in the terminal before it runs, so you know exactly what is happening.
-  - **🔒 LOCK MODE:** This mode is enabled by default to prevent accidental layout changes. To unlock the layout and move the Eww widgets, press Ctrl + G. A notification will appear to confirm the change.
-
-    <img src="https://github.com/user-attachments/assets/03c42c2a-f82a-4d28-b0d2-f33b6c382acf" alt="image" width="200" />
-
-    Once unlocked, you can move the widgets using Ctrl + Up, Down, Left, or Right. You can resize them using Alt + Up, Down, Left, or Right. To lock the layout again, press Ctrl + G. The layout will lock, and you will receive another notification.
-
-    <img src="https://github.com/user-attachments/assets/7803cae9-d7be-4d64-9d19-17fbbb96d139" alt="image" width="200" />
-    
-  - **🖱️ MOUSE MODE:** Disabled by default. When enabled, it allows you to move Eww widgets and other floating programs using your mouse. To toggle it on or off, press Ctrl + V; a notification will appear to confirm the status.
-
-    <img src="https://github.com/user-attachments/assets/456f07c5-b40a-4482-83ef-5b6757c0eb97" alt="image" width="200" />
-
-    Usage: Click and drag to move widgets. To resize them, hold Alt, click on a corner or edge, and drag. 
-
-    <img src="https://github.com/user-attachments/assets/4886a8a9-15e2-48d7-b479-c1ff47ac6bfb" alt="image" width="200" />
-
-    **Note:** Mouse Mode only works if Lock Mode is unlocked.
 
   - **🔔 NOTIFICATION SYSTEM:** This is the standout feature of this desktop! The notification system fully integrates with Mouse Mode and Lock Mode. It also displays real-time updates for:
     
@@ -90,7 +72,7 @@
    - **One-Line Installation**
 
 ```bash
-apt update && apt upgrade -y && apt install git wget python python3 python-pip x11-repo -y && git clone https://github.com/Keytaro2/Termux-Desktop-Awesome.git && cd Termux-Desktop-Awesome && python3 install.py && ./startawesome_termux.sh
+apt update && apt upgrade -y && apt install git wget python python3 python-pip x11-repo -y && git clone https://github.com/Keytaro2/Termux-Desktop-Awesome.git && cd Termux-Desktop-Awesome/Awesome-Termux && python3 install.py && ./startawesome_termux.sh
 ```
 
 
@@ -102,15 +84,10 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 
 | Keys | Action |
 | :-------------------: | :---------------------------------------------------------------: |
-| `ctrl` + `w` | Close focused window. |
+| `ctrl` + `shift` + `w` | Close focused window. |
 | `ctrl` + `Enter` | Open a terminal. |
-| `ctrl` + `k` | Open the wallpaper changer program. |
-| `ctrl` + `n` | Close the wallpaper changer program. |
-| `alt` + `/` | Take a screenshot.|
-| `ctrl` + `z`  | Toggle between profiles. |
-| `ctrl` + `x` | Go back to previous profile. |
-| `ctrl` + `v` | Enable or disable Mouse Mode. |
-| `ctrl` + `g`  | Toggle Lock Mode (lock/unlock widgets). |
+| `alt` + `/` | Take a screenshot. |
+| `alt` + `-` | Take a screenshot of a selected area. |
 | `alt` + `r` | Restart Awesome. |
 | `alt` + `q` | Quit Awesome. |
 | `ctrl` + `d` | Run Rofi (App Launcher). |
@@ -254,24 +231,17 @@ su -c getprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs
 
 
 <div align="center">
-    <h2>• Screenshots •</h2>
+    <h2></h2>
     <h3></h3>
 </div>
 
+
 <div align="center">
-    <img src="https://github.com/user-attachments/assets/94a27802-cb09-4897-ab4c-99a697f38f1c" alt="illogical-impulse logo" style="float:left; width:175px;">
+    <img src="https://github.com/user-attachments/assets/9556cb44-06e1-4971-9d1d-5c1d923a74f2" alt="illogical-impulse logo" style="float:left; width:175px;">
 </div>
 
-Widget system: Termux + Awesome + Eww
+Widget system: Awesome Termux
 
-
-| Perfil 1 | Perfil 2 |
-|:---|:---------------|
-| <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f3b711eb-dfca-4f28-97f1-720f1860b40b" /> | <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2637dcf0-2c4a-4be5-832e-64331dd2b6f0" /> |
-
-| Perfil 3 | Perfil 4 |
-|:---|:---------------|
-| <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/6c15ab84-461b-415f-8cc2-9fd3ba9176fc" /> | <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/cb47ac7a-5eda-4572-a948-aef310d815dc" /> |
 
 <div align="center">
     <h2></h2>
@@ -299,41 +269,49 @@ Widget system: Termux + Awesome + Eww
 ---
 
 <div align="center">
-    <h2>• Other Screenshots •</h2>
+    <h2>• Screenshots •</h2>
 </div> 
 
-<img src="https://github.com/user-attachments/assets/115185e7-a23d-40ed-ae81-f7621e41a388" width="90%" alt="Termux Desktop Screenshot">
+<img  src="https://github.com/user-attachments/assets/75bbb710-03f6-4b81-8d9c-5155d7ef5cfd">
 
 ---
 
-### Shutdown menu
+### The Desktop
+<img src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
+
+#### Beautiful and Fully Functional Dashboard
+
+<img src="https://github.com/user-attachments/assets/2a2dcba1-ca30-471a-8422-d8fd90c81c74" alt="Notification system">
+
+#### Beautiful And Fully Functional Notifications Center 
 
 
-|  |  |
-|:---|:---------------|
-|  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/b2ae10ea-af2c-489b-97ed-573c8e6f0b1e" /> |  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d8d1e1ee-5119-4ddc-bf5a-a2288e8eea66" /> |
-|  |  |
-
-#### Notification system
+<img src="https://github.com/user-attachments/assets/6a6b4a40-ecb1-4e8f-a878-f2c6739c7000" alt="Program to change wallpaper">
 
 
-<img src="https://github.com/user-attachments/assets/511d6cec-eef2-4677-b745-cbfbd7a519c9" alt="Notification system">
+#### Simple-Calendar
 
-#### Program to change wallpaper
+<img src="https://github.com/user-attachments/assets/dce2f63d-4f27-409a-904c-9b57a8b4ed2c" alt="Simple Calendar">
 
+#### Rofi (Apps Launcher)
 
-<img src="https://github.com/user-attachments/assets/d8f90560-4450-4121-a906-eac058aaba43" alt="Program to change wallpaper">
+<img src="https://github.com/user-attachments/assets/f02d8807-03e9-4e61-83d4-b3963ecbc15c" alt="Desktop Preview">
 
+#### Simple Powermenu
 
-#### Cava and actions
+<img  src="https://github.com/user-attachments/assets/9562992a-139c-4267-876d-d0c05932e326" alt="Desktop Preview">
 
-<img src="https://github.com/user-attachments/assets/314c3bcc-8c74-4fb3-9c08-057d20ffac15" alt="cava and actions">
+#### Right-Click Simple Desktop Menu
 
-#### The notification system supports Audacious, Flameshot, Mouse mode,  Lock mode and Wallpapers.
+<img src="https://github.com/user-attachments/assets/3b60d3a0-b75d-4158-afaf-e24f049a4857" alt="Desktop Preview">
 
-<img src="https://github.com/user-attachments/assets/f970f283-d17e-4b68-848b-674914014a11" alt="Desktop Preview">
+#### Simple but Fully Functional/Useful Vertical-Left Bar
 
+<img src="https://github.com/user-attachments/assets/c8097b18-8a56-4a66-b139-b99cc16a0116" alt="Desktop Preview">
 
+#### Simple but useful systray popup (triggered with systray toggler button in bar)
+
+<img src="https://github.com/user-attachments/assets/eb5ca7b9-37f8-4e44-a97a-a145431d2f07" alt="Desktop Preview">
 
 <div align="center">
     <h2>• inspirations/copying •</h2>

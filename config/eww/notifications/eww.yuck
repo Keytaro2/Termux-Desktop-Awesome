@@ -1,16 +1,498 @@
-;; NOTIFICATIONS
+;; ==========================================
+;; 1. VARIABLES AND POLLS
+;; ==========================================
 (defpoll my_notifications
   :interval "2s"
   `cat /data/data/com.termux/files/usr/tmp/notifs.json`)
 
+(defvar current_screenshot "")
+
+;; Music Variables (Audacious)
+(defpoll audacious_title :interval "1s" "audtool current-song-tuple-data title")
+(defpoll audacious_artist :interval "1s" "audtool current-song-tuple-data artist")
+;; NOTE: Remember to change this path to a real image on your device, otherwise nothing will show up.
+(defvar audacious_cover "/data/data/com.termux/files/home/path/to/your/image.jpg") 
+
+;; ==========================================
+;; 2. WIDGETS
+;; ==========================================
+
+;; WIDGET: SCREENSHOT POPUP (WITH IMAGE AND BUTTONS)
+(defwidget screenshot_popup_widget []
+  (eventbox
+    :onclick "eww close popup_screenshot -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (box
+          :style "background-image: url('${current_screenshot}');
+                  background-size: cover;
+                  background-position: center;
+                  min-width: 32px;
+                  min-height: 32px;
+                  border-radius: 50%;")
+        (label
+          :text "Screenshot"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 22px;"
+        (label
+          :text "Screenshot Is Ready!"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Screenshot saved successfully"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+
+      (box
+        :orientation "horizontal"
+        :space-evenly true
+        :spacing 15
+        (button
+          :onclick "bash ~/.config/eww/scripts/screenshot_actions.sh copy '${current_screenshot}' &"
+          :style "background-color: #1a1b26;
+                  color: #c0caf5;
+                  padding: 8px;
+                  border-radius: 20px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border: 1px solid #292e42;"
+          "Copy")
+        (button
+          :onclick "bash ~/.config/eww/scripts/screenshot_actions.sh delete '${current_screenshot}' &"
+          :style "background-color: #1a1b26;
+                  color: #c0caf5;
+                  padding: 8px;
+                  border-radius: 20px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border: 1px solid #292e42;"
+          "Delete")
+      )
+    )
+  )
+)
+
+;; WIDGET: DELETED SCREENSHOT POPUP
+(defwidget screenshot_deleted_popup_widget []
+  (eventbox
+    :onclick "eww close popup_screenshot_deleted -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (label
+          :text ""
+          :style "color: #7aa2f7; font-size: 26px; margin-right: 6px;")
+        (label
+          :text "Screenshot"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 10px;"
+        (label
+          :text "Screenshot"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Screenshot removed successfully."
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+    )
+  )
+)
+
+;; WIDGET: COPIED SCREENSHOT POPUP
+(defwidget screenshot_copied_popup_widget []
+  (eventbox
+    :onclick "eww close popup_screenshot_copied -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (label
+          :text ""
+          :style "color: #7aa2f7; font-size: 26px; margin-right: 6px;")
+        (label
+          :text "Screenshot"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 10px;"
+        (label
+          :text "Screenshot"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Screenshot copied successfully."
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+    )
+  )
+)
+
+;; WIDGET: LAUNCHER POPUP (TERMINAL)
+(defwidget launcher_popup_widget []
+  (eventbox
+    :onclick "eww close popup_launcher -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (label
+          :text ""
+          :style "color: #7aa2f7; font-size: 26px; margin-right: 6px;")
+        (label
+          :text "Launchers"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 10px;"
+        (label
+          :text "Launching!"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Launching terminal, please wait..."
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+    )
+  )
+)
+
+;; WIDGET: EXPLORER POPUP (THUNAR)
+(defwidget explorer_popup_widget []
+  (eventbox
+    :onclick "eww close popup_explorer -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (label
+          :text ""
+          :style "color: #7aa2f7; font-size: 26px; margin-right: 6px;")
+        (label
+          :text "Launchers"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 10px;"
+        (label
+          :text "Launching!"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Launching explorer, please wait..."
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+    )
+  )
+)
+
+;; WIDGET: BROWSER POPUP (FIREFOX)
+(defwidget browser_popup_widget []
+  (eventbox
+    :onclick "eww close popup_browser -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+        (label
+          :text ""
+          :style "color: #7aa2f7; font-size: 26px; margin-right: 6px;")
+        (label
+          :text "Launchers"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 10px;"
+        (label
+          :text "Launching!"
+          :halign "center"
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text "Launching browser, please wait..."
+          :halign "center"
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+    )
+  )
+)
+
+
+;; WIDGET: MUSIC POPUP
+(defwidget music_popup_widget []
+  (eventbox
+    :onclick "eww close popup_music -c ~/.config/eww/notifications &"
+    (box
+      :orientation "vertical"
+      :space-evenly false
+      :style "background-color: rgba(2, 6, 18, 0.98);
+              border-radius: 24px;
+              padding: 15px 20px;
+              border: 1px solid #1a233a;"
+
+      ;; HEADER
+      (box
+        :orientation "horizontal"
+        :space-evenly false
+        :spacing 12
+        :valign "center"
+        :style "margin-bottom: 12px;"
+
+        (box
+          :style "background-image: url('${audacious_cover}');
+                  background-size: cover;
+                  background-position: center;
+                  min-width: 32px;
+                  min-height: 32px;
+                  border-radius: 50%;")
+        (label
+          :text "Music"
+          :style "color: #c0caf5; font-size: 16px; font-weight: bold;")
+      )
+
+      ;; SEPARATOR
+      (box
+        :style "background-color: #c0caf5;
+                min-height: 1px;
+                margin-bottom: 18px;")
+
+      ;; INFO: TITLE AND ARTIST
+      (box
+        :orientation "vertical"
+        :space-evenly false
+        :spacing 6
+        :style "margin-bottom: 22px;"
+        (label
+          :text {audacious_title != "" ? audacious_title : "Unknown Title"}
+          :halign "center"
+          :limit-width 25
+          :style "color: #c0caf5; font-size: 18px; font-weight: bold;")
+        (label
+          :text {audacious_artist != "" ? audacious_artist : "Unknown Artist"}
+          :halign "center"
+          :limit-width 30
+          :style "color: #c0caf5; font-size: 14px;")
+      )
+
+      ;; BUTTONS: PREVIOUS & NEXT
+      (box
+        :orientation "horizontal"
+        :space-evenly true
+        :spacing 15
+        (button
+          :onclick "audtool playlist-reverse"
+          :style "background-color: #1a1b26;
+                  color: #c0caf5;
+                  padding: 8px;
+                  border-radius: 20px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border: 1px solid #292e42;"
+          "Previous")
+        (button
+          :onclick "audtool playlist-advance"
+          :style "background-color: #1a1b26;
+                  color: #c0caf5;
+                  padding: 8px;
+                  border-radius: 20px;
+                  font-size: 14px;
+                  font-weight: bold;
+                  border: 1px solid #292e42;"
+          "Next")
+      )
+    )
+  )
+)
+
+;; ==========================================
+;; 3. WINDOWS
+;; ==========================================
+
+(defwindow popup_screenshot
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (screenshot_popup_widget)
+)
+
+(defwindow popup_screenshot_deleted
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (screenshot_deleted_popup_widget)
+)
+
+(defwindow popup_screenshot_copied
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (screenshot_copied_popup_widget)
+)
+
+(defwindow popup_music
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (music_popup_widget)
+)
+
+(defwindow popup_launcher
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (launcher_popup_widget)
+)
+
+(defwindow popup_explorer
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (explorer_popup_widget)
+)
+
+(defwindow popup_browser
+  :monitor 0
+  :geometry (geometry :x "-20px" :y "15px" :width "380px" :anchor "top right")
+  :stacking "overlay"
+  :wm-ignore true
+  (browser_popup_widget)
+)
+
+
+;; WINDOW: NOTIFICATIONS PANEL
 (defwindow notifications
   :monitor 0
-  :geometry (geometry
-    :x "-20px"
-    :y "15px"
-    :width "500px"
-    :height "97%"
-    :anchor "top right")
+  :geometry (geometry :x "-20px" :y "15px" :width "500px" :height "97%" :anchor "top right")
   :stacking "fg"
   :wm-ignore false
 
@@ -22,7 +504,6 @@
             border-radius: 24px;
             padding: 12px;"
 
-    ;; QUALIFICATION
     (label
       :text "Notifications"
       :valign "start"
@@ -32,7 +513,6 @@
               font-weight: bold;
               margin-bottom: 5px;")
 
-    ;; SCROLL
     (scroll
       :vscroll true
       :hscroll false
@@ -44,8 +524,6 @@
         :spacing 8
 
         (for elemento in my_notifications
-
-          ;; ROYAL CARD
           (box
             :orientation "vertical"
             :space-evenly false
@@ -53,8 +531,24 @@
                     border-radius: 20px;
                     margin-bottom: 8px;"
 
-            ;; 1. HEADER
+            ;; STATUS: NOTIFICATION DELETED (COMPACT)
             (box
+              :visible {elemento.app == "removed"}
+              :orientation "horizontal"
+              :space-evenly false
+              :spacing 12
+              :valign "center"
+              :style "padding: 16px 20px;"
+              (label
+                :text ""
+                :style "color: #7aa2f7; font-size: 24px; margin-right: 8px;")
+              (label
+                :text "Notification removed successfully"
+                :style "color: #c0caf5; font-size: 18px; font-weight: bold;"))
+
+            ;; NORMAL CARD HEADER
+            (box
+              :visible {elemento.app != "removed"}
               :style "padding: 12px 18px;
                       background: #0c1326;
                       border-radius: 20px 20px 0px 0px;"
@@ -63,28 +557,22 @@
                 :text "${elemento.app}"
                 :hexpand true
                 :halign "start"
-                :style "color: #d8def8;
+                :style "color: #c0caf5;
                         font-size: 22px;
                         font-weight: bold;")
 
-              ;; REAL DELETE BUTTON
               (button
-                :onclick "bash ~/.config/eww/scripts/manage_notifs.sh --delete ${elemento.id}"
+                :onclick "bash ~/.config/eww/scripts/manage_notifs.sh --delete ${elemento.id} &"
                 :style "background: transparent;
                         border: none;
                         padding: 0px;"
-
                 (label
                   :text "󰆴"
                   :halign "end"
                   :style "color: #f7768e;
                           font-size: 20px;")))
 
-            ;; -------------------------------------------------- 
-            ;; DETECT BODY DESIGN 
-            ;; --------------------------------------------------
-
-            ;; DESIGN A: MUSIC (Horizontal)
+            ;; LAYOUT A: MUSIC
             (box
               :visible {elemento.app == "Music" || elemento.app == "Audacious"}
               :orientation "horizontal"
@@ -94,7 +582,6 @@
                       background: #111827;
                       border-radius: 0px 0px 20px 20px;"
 
-              ;; Cover on the left
               (box
                 :style "background-image: url('${elemento.image}');
                         background-size: cover;
@@ -103,7 +590,6 @@
                         min-height: 100px;
                         border-radius: 12px;")
 
-              ;; Text Content (Larger Letters)
               (box
                 :orientation "vertical"
                 :hexpand true
@@ -116,21 +602,17 @@
                   :text "${elemento.title}"
                   :wrap true
                   :halign "center"
-                  :style "color: #f5f7ff;
-                          font-size: 28px;
-                          font-weight: bold;")
+                  :style "color: #c0caf5; font-size: 28px; font-weight: bold;")
 
                 (label
                   :text "${elemento.body}"
                   :wrap true
                   :halign "center"
-                  :style "color: #aeb7d6;
-                          font-size: 20px;"))
-            )
+                  :style "color: #c0caf5; font-size: 20px;")))
 
-            ;; DESIGN B: SCREENSHOTS / LARGE IMAGES
+            ;; LAYOUT B: SCREENSHOTS / LARGE IMAGES
             (box
-              :visible {elemento.app != "Music" && elemento.app != "Audacious" && elemento.image != "" && elemento.image != "null"}
+              :visible {elemento.app != "Music" && elemento.app != "Audacious" && elemento.app != "removed" && elemento.image != "" && elemento.image != "null"}
               :orientation "vertical"
               :space-evenly false
               :spacing 10
@@ -138,7 +620,6 @@
                       background: #111827;
                       border-radius: 0px 0px 20px 20px;"
 
-              ;; Large Image (Height at 220px)
               (box
                 :style "background-image: url('${elemento.image}');
                         background-size: cover;
@@ -147,7 +628,6 @@
                         border-radius: 12px;
                         margin-bottom: 5px;")
 
-              ;; Centered Text
               (box
                 :orientation "vertical"
                 :space-evenly false
@@ -157,21 +637,17 @@
                   :text "${elemento.title}"
                   :wrap true
                   :halign "center"
-                  :style "color: #d8def8;
-                          font-size: 28px;
-                          font-weight: bold;")
+                  :style "color: #c0caf5; font-size: 28px; font-weight: bold;")
 
                 (label
                   :text "${elemento.body}"
                   :wrap true
                   :halign "center"
-                  :style "color: #8b95b3;
-                          font-size: 16px;"))
-            )
+                  :style "color: #c0caf5; font-size: 16px;")))
 
-            ;; DESIGN C: TEXT ONLY / OTHER (This is the one that will catch your "Screenshot removed" notification)
+            ;; LAYOUT C: TEXT ONLY
             (box
-              :visible {elemento.app != "Music" && elemento.app != "Audacious" && (elemento.image == "" || elemento.image == "null")}
+              :visible {elemento.app != "Music" && elemento.app != "Audacious" && elemento.app != "removed" && (elemento.image == "" || elemento.image == "null")}
               :orientation "horizontal"
               :space-evenly false
               :spacing 15
@@ -183,9 +659,7 @@
                 :text ""
                 :valign "center"
                 :halign "center"
-                :style "font-size: 45px;
-                        color: #7aa2f7;
-                        min-width: 60px;")
+                :style "font-size: 45px; color: #7aa2f7; min-width: 60px; margin-right: 15px;")
 
               (box
                 :orientation "vertical"
@@ -198,19 +672,16 @@
                   :text "${elemento.title}"
                   :wrap true
                   :halign "start"
-                  :style "color: #d8def8;
-                          font-size: 22px;
-                          font-weight: bold;")
+                  :style "color: #c0caf5; font-size: 22px; font-weight: bold;")
 
                 (label
                   :text "${elemento.body}"
                   :wrap true
                   :halign "start"
-                  :style "color: #8b95b3;
-                          font-size: 16px;"))
-            )
-          ))
-      ))
+                  :style "color: #c0caf5; font-size: 16px;")))
+          )
+        )
+      )
+    )
   )
 )
-

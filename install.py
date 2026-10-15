@@ -7,14 +7,30 @@ class Colors:
     PINK = '\033[95m'
     BLUE = '\033[94m'
     GREEN = '\033[92m'
+    YELLOW = '\033[93m'
     RESET = '\033[0m'
 
 def run(cmd):
     os.system(cmd)
 
+def ask_yes_no(question):
+    while True:
+        answer = input(f"{Colors.YELLOW}{question} (yes/no): {Colors.RESET}").strip().lower()
+        if answer in ("yes", "y"):
+            return True
+        if answer in ("no", "n"):
+            return False
+        print("Please answer 'yes' or 'no'.")
+
 def main():
     run("clear")
     print(f"{Colors.PINK}=== Termux-Desktop-Awesome Installer ==={Colors.RESET}")
+
+    # Ask at the beginning about pokeget
+    print(f"{Colors.YELLOW}[!] Warning: 'pokeget' compiles with cargo and is a HEAVY package.")
+    print(f"    It may take a long time and consume a lot of storage and battery.{Colors.RESET}")
+    install_pokeget = ask_yes_no("Do you want to install pokeget?")
+
     print(f"{Colors.BLUE}[+] Preparing the environment...... {Colors.RESET}")
     sleep(1)
 
@@ -24,7 +40,12 @@ def main():
     run("pkg install x11-repo python python-pip git wget curl termux-x11-nightly pulseaudio firefox tur-repo zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 jq lxappearance neovim-nightly rust chafa flameshot pygobject xorg-xsetroot -y")
     run(f"pkg install {apps} -y")
     run("pip install pyxdg pywal")
-    run("cargo install pokeget")
+
+    if install_pokeget:
+        print(f"{Colors.BLUE}[+] Installing pokeget...{Colors.RESET}")
+        run("cargo install pokeget")
+    else:
+        print(f"{Colors.BLUE}[+] Skipping pokeget.{Colors.RESET}")
 
     # 2. Creating base directories
     run("mkdir -p ~/.config")
@@ -35,12 +56,21 @@ def main():
     config_items = [
         "audacious", "awesome", "cava", "eww", "flameshot",
         "gtk-3.0", "neofetch", "picom", "rofi", "Thunar",
-        "Wallpaper", "xfce4", "starship.toml"
+        "Wallpaper", "xfce4", "starship.toml", "folder_icon.sh"
     ]
     for item in config_items:
         path = f"config/{item}"
         if os.path.exists(path):
             run(f"cp -r {path} ~/.config/")
+
+    if os.path.exists("config/folder_icon.sh"):
+        run("chmod +x ~/.config/folder_icon.sh")
+
+    # Copy awesome layouts to default theme
+    layouts_src = "config/awesome/layouts"
+    if os.path.isdir(layouts_src):
+        run("mkdir -p $PREFIX/share/awesome/themes/default/layouts")
+        run(f"cp -r {layouts_src}/. $PREFIX/share/awesome/themes/default/layouts/")
 
     # 4. Move Executables to /usr/bin/
     executables = ["panes", "colortest", "sfetch"]
@@ -53,16 +83,16 @@ def main():
 
     # 5. Fonts and Appearance
 
-    # Mover xfce4 directamente desde la carpeta fonts del repositorio
+    # Move xfce4 directly from the repository's fonts folder
     if os.path.exists("fonts/xfce4"):
         run("mv fonts/xfce4 ~/.local/share/")
 
-    # Mover el tema de cursor a la ruta de iconos del sistema Termux
-    if os.path.exists("fonts/capitaine-cursors-light"):
+    # Move cursor theme to Termux icons path
+    if os.path.exists("fonts/Bibata-Material-Cloud-Light"):
         run("mkdir -p $PREFIX/share/icons")
-        run("mv fonts/capitaine-cursors-light $PREFIX/share/icons/")
+        run("mv fonts/Bibata-Material-Cloud-Light $PREFIX/share/icons/")
 
-    # Copiar el resto de las fuentes (xfce4 ya no estará aquí)
+    # Copy the remaining fonts (xfce4 and cursor will no longer be here)
     if os.path.isdir("fonts"):
         run("cp -r fonts ~/.local/share/")
         run("fc-cache -fv > /dev/null")
@@ -116,6 +146,8 @@ def main():
     if os.path.exists(fish_config):
         run(f"grep -qxF '# CARGO' {fish_config} || echo '\n# CARGO\n{fish_cargo}' >> {fish_config}")
         run(f"grep -qxF '# STARSHIP' {fish_config} || echo '\n# STARSHIP\n{fish_starship}' >> {fish_config}")
+
+    print(f"{Colors.GREEN}[✓] Installation finished!{Colors.RESET}")
 
 if __name__ == "__main__":
     try:

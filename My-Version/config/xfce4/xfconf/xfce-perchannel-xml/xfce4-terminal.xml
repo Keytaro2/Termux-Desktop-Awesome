@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<channel name="xfce4-terminal" version="1.0">
+  <property name="color-foreground" type="string" value="#c0c0cacaf5f5"/>
+  <property name="color-background" type="string" value="#09090e0e2020"/>
+  <property name="font-name" type="string" value="CaskaydiaMono Nerd Font Bold Italic 15"/>
+  <property name="misc-always-show-tabs" type="bool" value="false"/>
+  <property name="misc-borders-default" type="bool" value="false"/>
+  <property name="scrolling-bar" type="string" value="TERMINAL_SCROLLBAR_NONE"/>
+  <property name="color-background-vary" type="bool" value="false"/>
+  <property name="color-cursor-foreground" type="string" value=""/>
+  <property name="color-cursor" type="string" value="#f5e0dc"/>
+  <property name="color-cursor-use-default" type="bool" value="true"/>
+  <property name="color-selection" type="string" value=""/>
+  <property name="color-selection-background" type="string" value=""/>
+  <property name="color-selection-use-default" type="bool" value="true"/>
+  <property name="color-bold" type="string" value="#cdd6f4"/>
+  <property name="color-bold-use-default" type="bool" value="true"/>
+  <property name="color-palette" type="string" value="rgb(69,71,90);rgb(243,139,168);rgb(111,111,252);rgb(249,226,175);rgb(137,180,250);rgb(203,166,247);rgb(148,226,213);rgb(186,194,222);rgb(88,91,112);rgb(243,139,168);rgb(111,111,252);rgb(249,226,175);rgb(137,180,250);rgb(203,166,247);rgb(148,226,213);rgb(166,173,200)"/>
+  <property name="color-bold-is-bright" type="bool" value="true"/>
+  <property name="color-use-theme" type="bool" value="false"/>
+  <property name="tab-activity-color" type="string" value="#aa0000"/>
+</channel>

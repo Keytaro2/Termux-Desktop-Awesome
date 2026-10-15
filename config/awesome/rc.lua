@@ -5,29 +5,34 @@
 -- LIBRARIES
 -- =========================================
 local gears = require("gears")
-local awful = require("awful")
+awful = require("awful")
 require("awful.autofocus")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 local naughty = require("naughty")
 
 -- =========================================
+-- HELPER: Identify specific applications ignoring case
+-- =========================================
+local function is_target_app(c)
+    if not c then return false end
+    local cls = string.lower(c.class or "")
+    local inst = string.lower(c.instance or "")
+    return (string.find(cls, "xfce4%-terminal") or
+            string.find(cls, "thunar") or
+            string.find(cls, "audacious") or
+            string.find(cls, "firefox") or
+            string.find(inst, "navigator") or
+            string.find(cls, "navigator"))
+end
+
+-- =========================================
 -- Smart function to move windows
 -- =========================================
 local function smart_move(dx, dy)
     local c = client.focus
-    if c then
-        -- Define which are your "free" apps
-        -- Added "Firefox" to the list
-        local is_free = (c.class == "Xfce4-terminal" or 
-                         c.class == "Thunar" or 
-                         c.class == "Audacious" or 
-                         c.class == "Firefox")
-        
-        -- If it's a free app OR the lock is disabled, move it
-        if is_free or not lock_mode_enabled then
-            c:relative_move(dx, dy, 0, 0)
-        end
+    if c and (is_target_app(c) or not lock_mode_enabled) then
+        c:relative_move(dx, dy, 0, 0)
     end
 end
 
@@ -36,20 +41,8 @@ end
 -- =========================================
 local function smart_resize(dw, dh)
     local c = client.focus
-    if not c then
-        return
-    end
-
-    local is_free = (
-        c.class == "Xfce4-terminal" or
-        c.class == "Thunar" or
-        c.class == "Audacious" or
-        c.class == "Firefox"
-    )
-
-    if is_free or not lock_mode_enabled then
+    if c and (is_target_app(c) or not lock_mode_enabled) then
         local g = c:geometry()
-
         c:geometry({
             x = g.x,
             y = g.y,
@@ -62,27 +55,26 @@ end
 -- =========================================
 -- VARIABLES
 -- =========================================
-terminal = "xfce-terminal --hide-menubar"
+terminal = "xfce-terminal --hide-menubar --working-directory=$HOME"
 modkey = "Mod4"
 
 -- =========================================
 -- THEME
 -- =========================================
 beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-beautiful.bg_normal = "#090E20" 
+beautiful.bg_normal = "#090E20"
 
 -- =========================================
 -- AUTOSTART
 -- =========================================
 awful.spawn.with_shell("bash /data/data/com.termux/files/home/.config/eww/scripts/watch_music.sh > /data/data/com.termux/files/usr/tmp/watch_music.log 2>&1 &")
 awful.spawn.with_shell("pkill -f '[m]anage_notifs.sh'; bash /data/data/com.termux/files/home/.config/eww/scripts/manage_notifs.sh &")
-awful.spawn.with_shell("if [ -f ~/.fehbg ]; then bash ~/.fehbg; else feh --bg-fill ~/.config/Wallpaper/flowers-1.jpg; fi &")
--- awful.spawn.with_shell("feh --bg-fill ~/.config/Wallpaper/flowers-1.jpg")
+awful.spawn.with_shell("feh --bg-fill ~/.config/Wallpaper/wallpaper.jpg &")
 awful.spawn.with_shell("picom &")
 awful.spawn.with_shell("pgrep -x eww || eww daemon &")
 awful.spawn.with_shell("sleep 2 && eww open bar")
 awful.spawn.with_shell([[
-    echo "Xcursor.theme: capitaine-cursors-light" > ~/.Xresources
+    echo "Xcursor.theme: Bibata-Material-Cloud-Light" > ~/.Xresources
     echo "Xcursor.size: 32" >> ~/.Xresources
     export XCURSOR_SIZE=32
     xrdb -merge ~/.Xresources
@@ -92,7 +84,12 @@ awful.spawn.with_shell([[
 -- =========================================
 -- LAYOUTS
 -- =========================================
-awful.layout.layouts = { awful.layout.suit.floating, awful.layout.suit.max }
+awful.layout.layouts = {
+    awful.layout.suit.tile,      -- Grid
+    awful.layout.suit.floating,  -- Floating
+    awful.layout.suit.max        -- Fullscreen
+}
+
 
 -- =========================================
 -- TAGS
@@ -105,68 +102,53 @@ end)
 -- KEYS
 -- =========================================
 globalkeys = gears.table.join(
+    awful.key({ "Control" }, "Return", function ()
+        awful.spawn.with_shell("bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' ''")
+        awful.spawn("xfce4-terminal --hide-menubar --working-directory=$HOME")
+    end),
 
-    awful.key({ "Control" }, "Return", function () awful.spawn("xfce4-terminal --hide-menubar") end),
     awful.key({ "Mod1" }, "r", awesome.restart),
     awful.key({ "Mod1" }, "q", awesome.quit),
     awful.key({ "Control" }, "d", function () awful.spawn.with_shell("rofi -show drun") end),
     awful.key({ "Mod1" }, "d", function () awful.spawn.with_shell("eww close launcher") end),
 
-    -- Move floating window (Smart: Free apps always, Widgets only if not locked)
     awful.key({ "Control" }, "Left",  function () smart_move(-20, 0) end),
     awful.key({ "Control" }, "Down",  function () smart_move(0, 20) end),
     awful.key({ "Control" }, "Up",    function () smart_move(0, -20) end),
     awful.key({ "Control" }, "Right", function () smart_move(20, 0) end),
 
-    -- Resize window (Keep the previous logic if you prefer it to also be smart)
     awful.key({ "Mod1" }, "Left",  function() smart_resize(-20, 0) end),
     awful.key({ "Mod1" }, "Down",  function() smart_resize(0, 20) end),
     awful.key({ "Mod1" }, "Up",    function() smart_resize(0, -20) end),
     awful.key({ "Mod1" }, "Right", function() smart_resize(20, 0) end),
+
     -- Flameshot (Alt + /)
     awful.key({ "Mod1" }, "/", function ()
         local cmd = "mkdir -p $HOME/Pictures && " ..
                     "FILE=$HOME/storage/downloads/Screenshot_$(date +%Y%m%d_%H%M%S).png && " ..
                     "flameshot full -r > $FILE && " ..
-                    "bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot Is Ready!' 'Screenshot saved successfully' $FILE && " ..
-                    "bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot' 'Screenshot removed successfully.' 'null'"
+                    "eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false & " ..
+                    "bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot Is Ready!' 'Screenshot saved successfully' $FILE"
         awful.spawn.with_shell(cmd)
     end),
 
-    -- Toggle Eww profiles (Ctrl + Z)
-    awful.key({ "Control" }, "z", function ()
-        awful.spawn.with_shell("~/.config/eww/scripts/toggle_profile.sh forward")
-    end,
-    {description = "Toggle Eww profiles (Forward)", group = "custom"}),
+    -- Quick Flameshot GUI (Alt + -)
+    awful.key({ "Mod1" }, "-", function ()
+        local cmd = "FILE=$HOME/storage/downloads/Screenshot_$(date +%Y%m%d_%H%M%S).png; " ..
+                    "flameshot gui --accept-on-select -r > \"$FILE\"; " ..
+                    "if [ -s \"$FILE\" ]; then " ..
+                    "  ( eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false ) & " ..
+                    "  bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot Is Ready!' 'Screenshot saved successfully' \"$FILE\"; " ..
+                    "else " ..
+                    "  rm -f \"$FILE\"; " ..
+                    "fi"
+        awful.spawn.with_shell(cmd)
+    end),
 
-    -- Go back Eww profiles (Ctrl + X)
-    awful.key({ "Control" }, "x", function ()
-        awful.spawn.with_shell("~/.config/eww/scripts/toggle_profile.sh back")
-    end,
-    {description = "Go back Eww profiles (Back)", group = "custom"}),
-
-    -- Python script (Ctrl + K)
-    awful.key({ "Control" }, "k", function ()
-        awful.spawn.with_shell("python ~/.config/eww/scripts/selector_gtk.py")
-    end,
-    {description = "Toggle selector_gtk.py (Open/Close)", group = "custom"}),
-
-    -- Close Python script (Ctrl + N)
     awful.key({ "Control" }, "n", function ()
         awful.spawn.with_shell("pkill -f selector_gtk.py")
     end,
-    {description = "Close GTK selector", group = "launcher"}),
-
-
-    -- Controls
-    awful.key({ "Control" }, "v", function ()
-        mouse_mode_enabled = not mouse_mode_enabled
-        naughty.notify({ app_name = "🖱️ Mouse Mode", text = (mouse_mode_enabled and "ENABLED" or "DISABLED") })
-    end),
-    awful.key({ "Control" }, "g", function ()
-        lock_mode_enabled = not lock_mode_enabled
-        naughty.notify({ app_name = "🔒 Locked Mode", text = (lock_mode_enabled and "🔒 LOCKED" or "🔓 UNLOCKED") })
-    end)
+    {description = "Close GTK selector", group = "launcher"})
 )
 root.keys(globalkeys)
 
@@ -176,30 +158,52 @@ root.keys(globalkeys)
 mouse_mode_enabled = false
 lock_mode_enabled = true
 local last_click_time = 0
-local double_click_interval = 0.30 
+local double_click_interval = 0.30
 
 clientbuttons = gears.table.join(
     awful.button({}, 1, function(c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
         if mouse_mode_enabled and not lock_mode_enabled then
             local current_time = os.clock()
-            if current_time - last_click_time < double_click_interval then awful.mouse.client.resize(c) end
+            if current_time - last_click_time < double_click_interval then
+                awful.mouse.client.resize(c)
+            end
             last_click_time = current_time
         end
     end),
     awful.button({ "Mod1" }, 1, function(c)
         c:emit_signal("request::activate", "mouse_click", {raise = true})
-        if mouse_mode_enabled and not lock_mode_enabled then awful.mouse.client.move(c) end
+        if mouse_mode_enabled and not lock_mode_enabled then
+            awful.mouse.client.move(c)
+        end
     end)
 )
 
+root.buttons(gears.table.join(
+    -- =====================================
+    -- RIGHT CLICK -> EWW CONTEXT MENU
+    -- =====================================
+    awful.button({}, 3, function()
+        local coords = mouse.coords()
+        local x = coords.x + 8
+        local y = coords.y + 8
+
+        awful.spawn.with_shell("eww -c ~/.config/eww/menu1 close menu1_5 2>/dev/null")
+        awful.spawn.with_shell(string.format("bash ~/.config/eww/scripts/launch.sh %d %d", x, y))
+    end),
+
+    -- =====================================
+    -- LEFT CLICK -> CLOSE MENU
+    -- =====================================
+    awful.button({}, 1, function()
+        awful.spawn.with_shell("eww -c ~/.config/eww/menu1 close menu1 menu1_5 2>/dev/null")
+    end)
+))
 
 -- =========================================
 -- RULES
 -- =========================================
 awful.rules.rules = {
-
-    -- Specific rule for Eww Powermenu (avoids gray background and borders)
     {
         rule = { instance = "eww-powermenu" },
         properties = {
@@ -211,9 +215,8 @@ awful.rules.rules = {
             skip_taskbar = true,
         }
     },
-
-    -- Global Rule for all other windows
     {
+        -- Base rule for ALL windows
         rule = {},
         properties = {
             border_width = 0,
@@ -223,29 +226,58 @@ awful.rules.rules = {
             placement = awful.placement.centered + awful.placement.no_offscreen,
             size_hints_honor = false,
             screen = awful.screen.preferred,
-            titlebars_enabled = false,
+            titlebars_enabled = false, -- OFF by default so it doesn't interfere with other apps
             buttons = clientbuttons,
         },
         callback = function(c)
             awful.placement.centered(c, nil)
         end
     },
-
-    -- Rule for exact terminal dimensions
     {
-        rule = { class = "Xfce4-terminal" },
+        -- Rule for Terminal, Thunar, and Audacious
+        rule_any = { class = { "Xfce4-terminal", "Thunar", "thunar", "Audacious", "audacious" } },
         properties = {
             width  = 650,
             height = 400,
-        }
+            placement = awful.placement.centered,
+            titlebars_enabled = true -- Explicitly ON
+        },
+        callback = function(c)
+            awful.placement.centered(c, nil)
+        end
     },
+    {
+        -- SPECIFIC rule for Firefox with all its possible name variations
+        rule_any = {
+            class = { "Firefox", "firefox", "Navigator", "firefox-esr", "Firefox-esr" },
+            instance = { "Navigator", "firefox", "firefox-esr" }
+        },
+        properties = {
+            floating = true,
+            width  = 900,
+            height = 550,
+            placement = awful.placement.centered,
+            size_hints_honor = false,
+            titlebars_enabled = true, -- Explicitly ON
+        },
+        callback = function(c)
+            -- Initial centering
+            awful.placement.centered(c, nil)
+
+            -- Magic delay: Forces the position and BUTTONS once Firefox manages to load
+            gears.timer.delayed_call(function()
+                if c.valid then
+                    awful.placement.centered(c, nil)
+                    c:emit_signal("request::titlebars")
+                end
+            end)
+        end
+    }
 }
 
 -- =========================================
 -- SIGNALS AND MAC/IOS BUTTON ENVIRONMENT
 -- =========================================
-
--- Function to build textured circular buttons
 local function create_dot_button(color, action)
     local button = wibox.widget {
         markup = '<span foreground="' .. color .. '">●</span>',
@@ -260,259 +292,85 @@ local function create_dot_button(color, action)
     return button
 end
 
--- Update of titlebars block with forced hiding
 client.connect_signal("request::titlebars", function(c)
-    -- If it's the terminal, remove native borders (this helps kill the top bar)
-    if c.class == "Xfce4-terminal" then
-        c.border_width = 0
-        
-        -- Create the sidebar for your buttons
-        local sidebar = awful.titlebar(c, {
-            position = "left",
-            size     = 40,
-            bg       = "#090E20"
-        })
+    -- HERE IS THE TRICK: We remove the name filter.
+    -- If the window reaches this function, it is because the rules above allowed "titlebars_enabled = true"
+    c.border_width = 0
+    local sidebar = awful.titlebar(c, {
+        position = "left",
+        size     = 40,
+        bg       = "#090E20"
+    })
 
-        sidebar:setup {
+    sidebar:setup {
+        {
             {
-                {
-                    create_dot_button("#ed6a7f", function() c:kill() end),
-                    create_dot_button("#f2d68f", function() c.minimized = true end),
-                    create_dot_button("#a8e8c0", function() 
-                        c.maximized = not c.maximized 
-                        c:raise() 
-                    end),
-                    spacing = 14,
-                    layout  = wibox.layout.fixed.vertical
-                },
-                top    = 22,
-                left   = 14,
-                right  = 0,
-                widget = wibox.container.margin
+                create_dot_button("#ed6a7f", function() c:kill() end),
+                create_dot_button("#f2d68f", function() c.minimized = true end),
+                create_dot_button("#a8e8c0", function()
+                    c.maximized = not c.maximized
+                    c:raise()
+                end),
+                spacing = 14,
+                layout  = wibox.layout.fixed.vertical
             },
-            nil,
-            nil,
-            layout = wibox.layout.align.vertical
-        }
-    end
+            top    = 22,
+            left   = 14,
+            right  = 0,
+            widget = wibox.container.margin
+        },
+        nil,
+        nil,
+        layout = wibox.layout.align.vertical
+    }
 end)
 
--- EXTRA SIGNAL: This ensures the top bar dies when opening
+-- Executed when OPENING any window
 client.connect_signal("manage", function(c)
-    if c.class == "Xfce4-terminal" then
-        -- Hide native window decorations
-        c.border_width = 0
-        -- Force redraw
-        c:emit_signal("request::titlebars")
-    end
+    -- Triggers the icon updater in Eww
+    awful.spawn.with_shell("bash ~/.config/eww/scripts/update_icons.sh")
+end)
+
+-- Executed when CLOSING any window
+client.connect_signal("unmanage", function(c)
+    -- Triggers the icon updater in Eww
+    awful.spawn.with_shell("bash ~/.config/eww/scripts/update_icons.sh")
 end)
 
 -- =========================================
 -- NOTIFICATION BRIDGE (NAUGHTY -> EWW)
 -- =========================================
 naughty.connect_signal("request::display", function(n)
-    -- Extract data directly from the notification object
     local app = tostring(n.app_name or "System")
     local title = tostring(n.title or "Notification")
     local message = tostring(n.message or "")
 
-    -- Clean single quotes to protect the Bash command
     app = app:gsub("'", "")
     title = title:gsub("'", "")
     message = message:gsub("'", "")
 
-    -- Build the exact command
     local script = "/data/data/com.termux/files/home/.config/eww/scripts/logger.sh"
     local cmd = string.format("%s '%s' '%s' '%s' ''", script, app, title, message)
 
-    -- Send data to the Eww panel in the background
     awful.spawn.with_shell(cmd)
-
-    -- Execute the destroy command so AwesomeWM doesn't draw its window
     naughty.destroy(n)
 end)
 
+-- =========================================
+-- EWW LAYOUT ICON SYNC (IMAGES)
+-- =========================================
+tag.connect_signal("property::layout", function(t)
+    local layout_name = awful.layout.getname(t.layout)
+    local theme_dir = "/data/data/com.termux/files/usr/share/awesome/themes/default/layouts/"
 
--- ===================================================================
--- MASTER ADJUSTMENT: GEOMETRIC CONTROL WITH REAL DIMENSIONS
--- ===================================================================
-client.connect_signal("manage", function(c)
-    -- 🔹 Add "actions1", "notifications" and "menu" to the detection list
-    if c.class == "Eww" or (c.name and (c.name:match("dashboard") or c.name:match("date") or c.name:match("actions") or c.name:match("notifications") or c.name:match("menu"))) then
-        c.floating = true
-        c.above = true
-        c.sticky = true
+    local img_path = theme_dir .. "tilew.png" -- 1: Grid (tile)
 
-        -- 🔥 Allows the widget to respond to the keyboard (Vital for Ctrl+Arrows)
-        c.focusable = true
-
-        -- 🔥 Forces Awesome to focus the widget when clicking on the background
-        c:connect_signal("mouse::press", function()
-            client.focus = c
-            c:raise()
-        end)
-
-        gears.timer.delayed_call(function()
-            if c.valid then
-                local s_geo = c.screen.geometry
-                local c_geo = c:geometry()
-                local client_width = c_geo.width
-                local client_height = c_geo.height
-                
-                -- Pre-calculated global variables
-                local center_x = s_geo.x + (s_geo.width - client_width) / 2
-                local center_y = s_geo.y + (s_geo.height - client_height) / 2
-
-                -- 🔥 MENU RULES FIRST: Prevent them from stealing positions due to their size
-                -- ===================================================
-                -- 📜 MENU 1 (~280px) -> Profiles 1 and 3
-                -- ===================================================
-                if c.name and c.name:match("menu1") then
-                    local current_profile = "1"
-                    local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
-                    if file then
-                        current_profile = file:read("*all"):gsub("%s+", "")
-                        file:close()
-                    end
-
-                    if current_profile == "3" then
-                        -- 🔵 PROFILE 3: Subtract 600 to clear the 600px of the central dashboard
-                        c:geometry({ x = center_x - 600, y = center_y + 120 })
-                    else
-                        -- ⚪ PROFILE 1: Original position intact
-                        c:geometry({ x = center_x - 210, y = center_y + 100 })
-                    end
-
-                -- ===================================================
-                -- 📜 MENU 2 (~280px) -> Profiles 2 and 4
-                -- ===================================================
-                elseif c.name and c.name:match("menu2") then
-                    local current_profile = "2"
-                    local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
-                    if file then
-                        current_profile = file:read("*all"):gsub("%s+", "")
-                        file:close()
-                    end
-
-                    if current_profile == "4" then
-                        -- 🟣 PROFILE 4: To the right of dashboard4 (Margin 120 + width ~380 = 500. Set to 530 for a clean margin)
-                        c:geometry({ x = s_geo.x + 550, y = center_y + 120 })
-                    else
-                        -- 🔴 PROFILE 2: Perfect dynamic centering between the calendar (date2) and dashboard2
-                        local date2_right = s_geo.x + 440                      -- Left margin (120) + date2 width (~320)
-                        local dash2_left = (s_geo.x + s_geo.width / 2) - 375   -- Screen center - half of dashboard2 (750/2)
-                        local gap = dash2_left - date2_right                   -- Real free space between both widgets
-                        
-                        c:geometry({ x = date2_right + (gap - client_width) / 2, y = center_y + 180 })
-                    end
-
-                -- ===================================================
-                -- 🔹 1. DASHBOARD 1 (Real size: 650px)
-                -- ===================================================
-                elseif (c.name and c.name:match("dashboard1")) or (client_width >= 640 and client_width <= 660) then
-                    awful.placement.left(c, { margins = { left = 120 }, honor_workarea = false })
-                    awful.placement.center_vertical(c, { honor_workarea = false })
-
-                -- ===================================================
-                -- 🎛️ 2. DASHBOARD 2 (750x500)
-                -- ===================================================
-                elseif (c.name and c.name:match("dashboard2")) or (client_width >= 730 and client_width <= 770) then
-                    local bottom_y = s_geo.y + s_geo.height - client_height - 15
-                    c:geometry({ x = center_x, y = bottom_y })
-
-                -- ===================================================
-                -- 🎛️ 3. DASHBOARD 3 (600x780)
-                -- ===================================================
-                elseif (c.name and c.name:match("dashboard3")) or (client_width >= 580 and client_width <= 620) then
-                    local bottom_y = s_geo.y + s_geo.height - client_height - 15
-                    c:geometry({ x = center_x, y = bottom_y })
-
-                -- ===================================================
-                -- 📱 4. DASHBOARD 4 (~350-400px real width, 97% height)
-                -- ===================================================
-                -- 🔥 Ultra-safe detection so it doesn't fall into the screen center limbo
-                elseif (c.name and c.name:match("dashboard4")) or 
-                       (c.name and c.name:match("dashboard") and client_width < 500) or 
-                       (client_width >= 280 and client_width <= 450 and not (c.name and (c.name:match("actions") or c.name:match("menu") or c.name:match("date")))) then
-                    awful.placement.left(c, { margins = { left = 120 }, honor_workarea = false })
-                    awful.placement.center_vertical(c, { honor_workarea = false })
-
-                -- ===================================================
-                -- ⚙️ 5. ACTIONS 1 and ACTIONS 2 (400px width)
-                -- ===================================================
-                elseif (client_width >= 390 and client_width <= 410 and client_height >= 200 and client_height <= 900) or (c.name and c.name:match("actions2")) then
-                    local right_x = s_geo.x + s_geo.width - client_width - 20
-                    local current_profile = "1"
-                    local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
-                    if file then
-                        current_profile = file:read("*all"):gsub("%s+", "")
-                        file:close()
-                    end
-
-                    if current_profile == "4" then
-                        local top_y = s_geo.y + 15
-                        c:geometry({ x = right_x, y = top_y })
-                    elseif current_profile == "3" then
-                        c.hidden = true
-                        c:geometry({ x = -9999, y = -9999 })
-                    else
-                        local top_y = s_geo.y + 545
-                        c:geometry({ x = right_x, y = top_y })
-                    end
-
-                -- ===================================================
-                -- 🔔 6. NOTIFICATIONS (500px width)
-                -- ===================================================
-                elseif client_width >= 490 and client_width <= 510 then
-                    local right_x = s_geo.x + s_geo.width - client_width - 20
-                    local top_y = s_geo.y + 15
-                    c:geometry({ x = right_x, y = top_y })
-
-                -- ===================================================
-                -- 📅 7. DATE 1 (~366x356)
-                -- ===================================================
-                elseif (client_width >= 360 and client_width <= 372 and client_height >= 350 and client_height <= 362) or (c.name and c.name:match("date1")) then
-                    local current_profile = "1"
-                    local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
-                    if file then
-                        current_profile = file:read("*all"):gsub("%s+", "")
-                        file:close()
-                    end
-
-                    if current_profile == "3" then
-                        local right_x = s_geo.x + s_geo.width - client_width - 20
-                        local date_bottom_y = s_geo.y + s_geo.height - client_height - 20
-                        c:geometry({ x = right_x, y = date_bottom_y })
-                    else
-                        c:geometry({ x = center_x - 170, y = center_y - 275 })
-                    end
-
-                -- ===================================================
-                -- 📅 8. DATE 2 (~320x400)
-                -- ===================================================
-                elseif (client_width >= 310 and client_width <= 335 and client_height >= 390 and client_height <= 415) or (c.name and c.name:match("date2")) then
-                    local current_profile = "2"
-                    local file = io.open("/data/data/com.termux/files/usr/tmp/current_profile", "r")
-                    if file then
-                        current_profile = file:read("*all"):gsub("%s+", "")
-                        file:close()
-                    end
-
-                    if current_profile == "4" then
-                        local top_y = s_geo.y + 15
-                        c:geometry({ x = center_x, y = top_y })
-                    else
-                        local left_x = s_geo.x
-                        c:geometry({ x = left_x + 120, y = center_y + 250 })
-                    end
-
-                -- ===================================================
-                -- 🔸 12. OTHER WIDGETS
-                -- ===================================================
-                else
-                    awful.placement.bottom(c, { margins = { bottom = 20 }, honor_workarea = true })
-                end
-            end
-        end)
+    if layout_name == "floating" then
+        img_path = theme_dir .. "floatingw.png" -- 2: Floating
+    elseif layout_name == "max" then
+        img_path = theme_dir .. "maxw.png" -- 3: Maximized
     end
+
+    awful.spawn.with_shell("eww update layout_image='" .. img_path .. "'")
 end)
+

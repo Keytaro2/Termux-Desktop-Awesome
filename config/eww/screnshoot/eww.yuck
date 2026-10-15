@@ -1,0 +1,179 @@
+;; =====================================================
+;; VARIABLES
+;; =====================================================
+(defvar screenshot_mode "full")
+(defvar screenshot_delay "0")
+(defvar screenshot_delay_editing false)
+(defvar tooltip_text "")
+
+;; =====================================================
+;; MAIN WINDOW (MENU)
+;; =====================================================
+(defwindow screnshoot
+  :monitor 0
+  :wm-ignore false
+  :windowtype "dialog"
+  :geometry (geometry :width "340px" :height "330px" :anchor "center")
+  :stacking "fg"
+  :focusable true
+  (screenshot-box)
+)
+
+;; =====================================================
+;; SECONDARY WINDOW (FLOATING TOOLTIP)
+;; =====================================================
+(defwindow screenshot_tooltip
+  :monitor 0
+  :wm-ignore true
+  :geometry (geometry :width "240px" :height "52px" :anchor "center" :y "230px")
+  :stacking "fg"
+  :focusable false
+
+  ;; PURE TOOLTIP — A SINGLE BOX
+  (box
+    :space-evenly false
+    :spacing 12
+    :halign "center"
+    :valign "center"
+    :style "background: rgba(2, 6, 18, 0.98); border-radius: 10px; padding: 10px 20px;"
+
+    (label
+      :style "color: #7aa2f7; font-size: 18px; font-weight: bold;"
+      :text "ⓘ")
+
+    (label
+      :style "color: #c0caf5; font-size: 16px; font-weight: 500;"
+      :text tooltip_text
+    )
+  )
+)
+
+;; =====================================================
+;; MAIN WIDGET
+;; =====================================================
+(defwidget screenshot-box []
+  (box
+    :orientation "vertical"
+    :class "menu"
+    :space-evenly false
+    :style "background-color: #090E20; border-radius: 24px;"
+
+    ;; CLOSE BUTTON
+    (box
+      :halign "start"
+      :valign "start"
+      :width 16
+      :height 16
+      :style "margin-top: 10px; margin-left: 10px; margin-bottom: 5px;"
+      (eventbox
+        :cursor "hand"
+        ;; Closes both windows in case the tooltip was left open
+        :onclick "eww -c ~/.config/eww/screnshoot close screnshoot screenshot_tooltip"
+        (box
+          :class "close-dot"
+          :style "background-color: #f7768e; border-radius: 10px; min-width: 16px; min-height: 16px;"
+        )
+      )
+    )
+
+    ;; TITLE
+    (label
+      :class "title"
+      :halign "center"
+      :style "color: #c0caf5; font-family: 'JetBrainsMono Nerd Font'; font-size: 26px; font-weight: bold; margin-bottom: 25px;"
+      :text "Take a Screenshot!"
+    )
+
+    ;; SCREENSHOT MODE BUTTONS
+    (box
+      :orientation "horizontal"
+      :class "mode-box"
+      :space-evenly true
+      :spacing 20
+      :halign "center"
+      :style "margin-bottom: 25px;"
+
+      ;; FULL SCREEN
+      (eventbox
+        ;; On hover, updates the text and opens the second window
+        :onhover "eww -c ~/.config/eww/screnshoot update tooltip_text='Full Screenshot' && eww -c ~/.config/eww/screnshoot open screenshot_tooltip"
+        ;; On hover lost, closes the second window
+        :onhoverlost "eww -c ~/.config/eww/screnshoot close screenshot_tooltip"
+        :cursor "hand"
+        (button
+          :class "mode-btn"
+          :style "background-color: ${screenshot_mode == 'full' ? '#7aa2f7' : '#1a1b26'}; color: ${screenshot_mode == 'full' ? '#1a1b26' : '#a9b1d6'}; border-radius: 12px; font-size: 40px; min-height: 110px; min-width: 120px;"
+          :onclick "eww -c ~/.config/eww/screnshoot update screenshot_mode='full'"
+          "󰋲"
+        )
+      )
+
+      ;; AREA SCREENSHOT
+      (eventbox
+        ;; On hover, updates the text and opens the second window
+        :onhover "eww -c ~/.config/eww/screnshoot update tooltip_text='Area Screenshot' && eww -c ~/.config/eww/screnshoot open screenshot_tooltip"
+        ;; On hover lost, closes the second window
+        :onhoverlost "eww -c ~/.config/eww/screnshoot close screenshot_tooltip"
+        :cursor "hand"
+        (button
+          :class "mode-btn"
+          :style "background-color: ${screenshot_mode == 'crop' ? '#7aa2f7' : '#1a1b26'}; color: ${screenshot_mode == 'crop' ? '#1a1b26' : '#a9b1d6'}; border-radius: 12px; font-size: 40px; min-height: 110px; min-width: 120px;"
+          :onclick "eww -c ~/.config/eww/screnshoot update screenshot_mode='crop'"
+          "󰆞"
+        )
+      )
+    )
+
+    ;; DELAY INPUT
+    (box
+      :orientation "horizontal"
+      :class "delay-box"
+      :halign "center"
+      :valign "center"
+      :hexpand false
+      :style "background-color: #16161e; border-radius: 10px;"
+
+      (eventbox
+        :class "delay-display"
+        :visible {screenshot_delay_editing == false}
+        :cursor "text"
+        :width 260
+        :height 45
+        :style "background-color: #16161e; border-radius: 10px;"
+        :onclick "eww -c ~/.config/eww/screnshoot update screenshot_delay_editing=true"
+        (label
+          :class "delay-label"
+          :halign "center"
+          :valign "center"
+          :style "background-color: #16161e; color: #a9b1d6;"
+          :text "Delay In Seconds: ${screenshot_delay}"
+        )
+      )
+
+      (input
+        :class "delay-input"
+        :visible {screenshot_delay_editing == true}
+        :value "${screenshot_delay}"
+        :width 260
+        :height 45
+        :halign "center"
+        :hexpand false
+        :style "background-color: #16161e; color: #c0caf5; border-radius: 10px;"
+        :onchange "eww -c ~/.config/eww/screnshoot update screenshot_delay='{}'"
+        :onaccept "eww -c ~/.config/eww/screnshoot update screenshot_delay_editing=false"
+      )
+    )
+
+    ;; SEPARATOR
+    (box :height 18)
+
+    ;; GO AND ENJOY BUTTON
+    (button
+      :class "action-btn"
+      :halign "center"
+      :style "background-color: #2dd4bf; color: #1a1b26; border-radius: 8px; padding: 6px 16px; font-size: 16px; font-weight: bold; min-width: 110px; min-height: 30px; margin-bottom: 20px;"
+      :onclick "MODE=\"${screenshot_mode}\" DELAY=\"${screenshot_delay}\" bash -c 'eww -c ~/.config/eww/screnshoot close screnshoot screenshot_tooltip; sleep \"$DELAY\"; mkdir -p $HOME/storage/downloads; FILE=\"$HOME/storage/downloads/Screenshot_$(date +%Y%m%d_%H%M%S).png\"; if [ \"$MODE\" = \"full\" ]; then flameshot full -r > \"$FILE\"; ( eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false ) & bash ~/.config/eww/scripts/logger.sh \"Screenshot\" \"Screenshot Is Ready!\" \"Screenshot saved successfully\" \"$FILE\"; else flameshot gui --accept-on-select -r > \"$FILE\"; if [ -s \"$FILE\" ]; then ( eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false ) & bash ~/.config/eww/scripts/logger.sh \"Screenshot\" \"Screenshot Is Ready!\" \"Screenshot saved successfully\" \"$FILE\"; else rm -f \"$FILE\"; fi; fi' &"
+      "${screenshot_mode == 'full' ? '󰋲' : '󰆞'} Go and Enjoy!"
+    )
+  )
+)

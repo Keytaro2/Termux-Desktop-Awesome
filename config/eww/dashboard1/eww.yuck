@@ -17,15 +17,16 @@
 (defpoll state_sync :interval "1s" "~/.config/eww/scripts/buttons.sh sync status")
 
 ;; --- MUSIC POLLERS ---
-(defpoll music_title :interval "2s" "audtool current-song-tuple-data title || echo 'Not Playing'")
-(defpoll music_artist :interval "2s" "audtool current-song-tuple-data artist || echo 'Unknown'")
+;; Fallbacks updated to show "No title" and "No artist"
+(defpoll music_title :interval "2s" "audtool current-song-tuple-data title || echo 'No title'")
+(defpoll music_artist :interval "2s" "audtool current-song-tuple-data artist || echo 'No artist'")
 (defpoll music_cover :interval "2s" "~/.config/eww/scripts/cover.sh")
-(defpoll music_status :interval "1s" "audtool playback-status") 
+(defpoll music_status :interval "1s" "audtool playback-status")
 
 ;; --- 2. MAIN WINDOW ---
 (defwindow dashboard1
   :stacking "fg"
-  :windowtype "normal"
+  :windowtype "dock"
   :wm-ignore false
   :geometry (geometry :x "120px"
                       :y "0%"
@@ -42,13 +43,15 @@
        :space-evenly false
 
     ;; --- ROW 0: SEARCH ---
-    ;; Everything is now inside a dark gray background card
     (box :orientation "h" :space-evenly false :hexpand true :style "background-color: #111827; border-radius: 16px; padding: 12px 15px; margin-bottom: 5px;" :vexpand false :valign "center"
       (box :style "background-image: url('../assets/pfp1.png'); background-size: cover; min-width: 24px; min-height: 24px; border-radius: 50%; margin-right: 10px;")
       (label :text "Hello Keytaro" :style "color: #c0caf5; font-size: 14px; font-weight: normal; margin-right: 15px;")
-      ;; The pill-shaped search bar with a dark color to contrast inside the gray card
-      (box :style "background-color: #090E20; border-radius: 20px; padding: 8px 15px;" :hexpand true
-           (label :text "󰍉  Search..." :halign "start" :style "color: #565f89; font-size: 13px;")))
+
+      ;; Clickable container (eventbox) that executes rofi
+      (eventbox :onclick "rofi -show drun &" :cursor "hand" :hexpand true
+        (box :orientation "h" :space-evenly false :style "background-color: #090E20; border-radius: 20px; padding: 8px 15px;" :hexpand true
+             (label :text "󰍉" :style "color: #7aa2f7; font-size: 14px; margin-right: 8px;")
+             (label :text "Search..." :halign "start" :style "color: #565f89; font-size: 13px;"))))
 
     ;; --- ROW 1: WELCOME AND PLAYER ---
     (box :orientation "h" :spacing 15 :space-evenly true :hexpand true :vexpand false
@@ -61,8 +64,9 @@
             (label :text "Welcome Keytaro" :halign "start" :style "font-size: 16px; color: #c0caf5; font-weight: bold;")
             (label :text "up 46 minutes" :halign "start" :style "font-size: 13px; color: #c0caf5;; margin-top: 4px;")))
         (box :orientation "h" :hexpand true :style "padding: 12px 15px 15px 15px;"
-          ;; Blue Button (Left)
-          (button :onclick "~/.config/eww/scripts/poweroff.sh logout"
+          
+          ;; Blue Button (Left) - Modified to open the powermenu
+          (button :onclick "eww -c ~/.config/eww/powermenu open --toggle powermenu &"
                   :style "background-color: #292e42; border-radius: 10px; min-width: 36px; min-height: 36px; color: #7aa2f7; font-size: 16px;" :halign "start" "󰐥")
 
           (box :orientation "h" :spacing 10 :halign "end" :hexpand true
@@ -81,9 +85,10 @@
           ;; Using the {music_cover} variable for the image
           (box :style "background-image: url('${music_cover}'); background-size: cover; min-width: 65px; min-height: 65px; border-radius: 12px; margin-right: 15px;")
           (box :orientation "v" :valign "center"
-            ;; Using Title and Artist variables
-            (label :text {music_title != "" ? music_title : "Not Playing"} :halign "start" :style "font-size: 16px; color: #c0caf5;  font-weight: bold;" :limit-width 15)
-            (label :text {music_artist != "" ? music_artist : "Unknown Artist"} :halign "start" :style "font-size: 13px; color: #c0caf5; margin-top: 4px;" :limit-width 18)))
+            
+            ;; Music labels updated to read "No title" and "No artist"
+            (label :text {music_title != "" ? music_title : "No title"} :halign "start" :style "font-size: 16px; color: #c0caf5;  font-weight: bold;" :limit-width 15)
+            (label :text {music_artist != "" ? music_artist : "No artist"} :halign "start" :style "font-size: 13px; color: #c0caf5; margin-top: 4px;" :limit-width 18)))
 
         ;; Functional Music Controls
         (box :orientation "h" :spacing 25 :halign "center" :style "padding: 12px 15px 15px 15px;"
@@ -93,7 +98,7 @@
 
           ;; Play/Pause Button
           (button :onclick "audtool playback-playpause"
-                  :style "color: #c0caf5; font-size: 20px;" 
+                  :style "color: #c0caf5; font-size: 20px;"
                   "${music_status == 'playing' ? '󰏤' : '󰐊'}")
 
           ;; Next Button
@@ -130,7 +135,8 @@
                   "${state_wifi == 'on' ? '󰖩' : '󰖪'}")
 
           (button :halign "center" :valign "center"
-                  :onclick "~/.config/eww/scripts/buttons.sh vol toggle"
+                ;;  :onclick "~/.config/eww/scripts/buttons.sh vol toggle"
+                   :onclick "~/.config/eww/scripts/buttons.sh vol toggle && bash ~/.config/eww/scripts/toggle_mute.sh &"
                   :style "background-color: ${state_vol == 'on' ? '#7aa2f7' : '#111827'}; color: ${state_vol == 'on' ? '#020612' : '#a9b1d6'}; border-radius: 50%; min-width: 44px; min-height: 44px; font-size: 20px;"
                   "${state_vol == 'on' ? '󰕾' : '󰖁'}")
 
@@ -142,7 +148,7 @@
           (button :halign "center" :valign "center"
                   :onclick "~/.config/eww/scripts/buttons.sh bri toggle"
                   :style "background-color: ${state_bri == 'on' ? '#7aa2f7' : '#111827'}; color: ${state_bri == 'on' ? '#020612' : '#a9b1d6'}; border-radius: 50%; min-width: 44px; min-height: 44px; font-size: 20px;"
-                  "${state_bri == 'on' ? '󰃠' : '󰃟'}"))
+                  "${state_bri == 'on' ? '' : '󰖨'}"))
 
         ;; Second Row (Bluetooth, Mic Mute, Crop, Sync)
         (box :orientation "h" :spacing 10 :space-evenly true
@@ -157,12 +163,14 @@
                   "${state_mic == 'on' ? '󰍬' : '󰍭'}")
 
           (button :halign "center" :valign "center"
-                  :onclick "~/.config/eww/scripts/buttons.sh crop toggle"
+;;                  :onclick "~/.config/eww/scripts/buttons.sh crop toggle"
+                   :onclick "~/.config/eww/scripts/buttons.sh crop toggle && xdotool key alt+slash &"
                   :style "background-color: ${state_crop == 'on' ? '#7aa2f7' : '#111827'}; color: ${state_crop == 'on' ? '#020612' : '#a9b1d6'}; border-radius: 50%; min-width: 44px; min-height: 44px; font-size: 20px;"
-                  "󰄀")
+                  "󰋲")
 
           (button :halign "center" :valign "center"
-                  :onclick "~/.config/eww/scripts/buttons.sh sync toggle"
+;;                  :onclick "~/.config/eww/scripts/buttons.sh sync toggle"
+                   :onclick "~/.config/eww/scripts/buttons.sh sync toggle && xdotool key alt+minus &"
                   :style "background-color: ${state_sync == 'on' ? '#7aa2f7' : '#111827'}; color: ${state_sync == 'on' ? '#020612' : '#a9b1d6'}; border-radius: 50%; min-width: 44px; min-height: 44px; font-size: 20px;"
                   "󰆞"))))
 

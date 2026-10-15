@@ -1,8 +1,8 @@
 (defwindow date1
     :monitor 0
-    :geometry (geometry :x "170px" :y "275px" :width "280px" :height "280px" :anchor "center")
+    :geometry (geometry :x "-840px" :y "275px" :width "280px" :height "280px" :anchor "center")
     :windowtype "normal"
-    :wm-ignore false
+    :wm-ignore true
     (cal))
 
 (defpoll time :interval "10s" `date +'{"day":"%d","month":"%m","year":"%Y","monthname":"%B"}'`)

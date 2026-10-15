@@ -1,101 +1,41 @@
 "$schema" = 'https://starship.rs/config-schema.json'
+add_newline = false
 
-format = """
-[░▒▓](#a3aed2)\
-$os\
-[](bg:#769ff0 fg:#a3aed2)\
-$directory\
-[](fg:#769ff0 bg:#394260)\
-$git_branch\
-$git_status\
-[](fg:#394260 bg:#212736)\
-$nodejs\
-$bun\
-$rust\
-$golang\
-$php\
-[](fg:#212736 bg:#1d2230)\
-$time\
-[ ](fg:#1d2230)\
-\n$character"""
+# Nota cómo cambiamos $directory por ${custom.folder}
+format = "$character${custom.folder}$git_branch$git_status "
 
-[directory]
-style = "fg:#e3e5e5 bg:#769ff0"
-format = "[ $path ]($style)"
-truncation_length = 3
-truncation_symbol = "…/"
+[character]
+success_symbol = "[󰊠 ](fg:#a8e8c0)"
+error_symbol = "[󰊠 ](fg:#F2B8B5)"
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
+# CONECTAMOS CON TU NUEVO SCRIPT
+[custom.folder]
+command = "bash ~/.config/folder_icon.sh"
+when = "true"
+style = "bold fg:#7BD0FF"
+format = "[$output]($style)"
 
 [git_branch]
 symbol = ""
-style = "bg:#394260"
-format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
+style = "fg:#F07FB2"
+format = '[ $symbol $branch]($style)'
 
 [git_status]
-style = "bg:#394260"
-format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
+style = "fg:#F07FB2"
+format = ' [$all_status$ahead_behind]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "fg:#7BD0FF"
+format = '[ $symbol ($version) ]($style)'
 
 [bun]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "fg:#7BD0FF"
+format = '[ $symbol ($version) ]($style)'
 
 [rust]
 symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
+style = "fg:#F4D48A"
+format = '[ $symbol ($version) ]($style)'
 
-[golang]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[php]
-symbol = ""
-style = "bg:#212736"
-format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
-
-[time]
-disabled = true
-time_format = "%R" # Hour:Minute Format
-style = "bg:#1d2230"
-format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
-
-[os]
-style = "bg:#a3aed2 fg:#090c0c"
-format = "[ $symbol ]($style)"
-disabled = false
-
-[os.symbols]
-Windows = "󰍲"
-Ubuntu = "󰕈"
-SUSE = ""
-Raspbian = "󰐿"
-Mint = "󰣭"
-Macos = "󰀵"
-Manjaro = ""
-Linux = "󰌽"
-Gentoo = "󰣨"
-Fedora = "󰣛"
-Alpine = ""
-Amazon = ""
-Android = ""
-AOSC = ""
-Arch = "󰣇"
-Artix = "󰣇"
-EndeavourOS = ""
-CentOS = ""
-Debian = "󰣚"
-Redhat = "󱄛"
-RedHatEnterprise = "󱄛"
-Pop = ""

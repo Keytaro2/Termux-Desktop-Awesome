@@ -1,0 +1,31 @@
+#!/bin/bash
+# Colores para los fantasmas de Pacman
+G_BLACK="\e[38;2;60;60;60m󰊠\e[0m"
+G_RED="\e[38;2;237;106;127m󰊠\e[0m"
+G_GREEN="\e[38;2;168;232;192m󰊠\e[0m"
+G_YELLOW="\e[38;2;242;214;143m󰊠\e[0m"
+G_BLUE="\e[38;2;98;160;234m󰊠\e[0m"
+G_MAGENTA="\e[38;2;198;160;246m󰊠\e[0m"
+G_CYAN="\e[38;2;145;215;227m󰊠\e[0m"
+G_WHITE="\e[38;2;244;244;244m󰊠\e[0m"
+
+# Colores de iconos
+C_OS="\e[38;2;168;232;192m󰌢\e[0m"       # Verde
+C_KERNEL="\e[38;2;198;160;246m\e[0m"   # Morado
+C_SHELL="\e[38;2;98;160;234m\e[0m"     # Azul
+C_USER="\e[38;2;237;106;127m\e[0m"     # Rojo/Rosa
+
+# Detectar información del sistema
+USER_HOST="Keytaro@samsung"
+OS="Termux"
+KERNEL="$(uname)"
+SHELL="$(basename "$SHELL")"
+USER_NAME="Keytaro"
+
+# Imprimir fetch
+echo -e " ${USER_HOST}"
+echo -e " ${C_OS} ${OS}"
+echo -e " ${C_KERNEL} ${KERNEL}"
+echo -e " ${C_SHELL} ${SHELL}"
+echo -e " ${C_USER} ${USER_NAME}"
+echo -e " ${G_BLACK} ${G_RED} ${G_GREEN} ${G_YELLOW} ${G_BLUE} ${G_MAGENTA} ${G_CYAN} ${G_WHITE}"
