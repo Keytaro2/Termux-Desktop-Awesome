@@ -14,6 +14,10 @@
     <h4>✨This is a more faithful desktop version from Alphatechnolog; enjoy it✨</h4>
 </div>
 
+## 🚀 old Readme
+
+[👉 See My-Version ](./My-Version/README.md)
+
 <div align="center">
     <h2>• overview •</h2>
     <h3></h3>
