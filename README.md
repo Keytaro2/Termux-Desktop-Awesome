@@ -60,10 +60,6 @@
      Screenshot.
 
     <img src="https://github.com/user-attachments/assets/5a8d51f0-69c2-4922-a606-b53ca29b859a" alt="image" width="200" />
-  
-     Wallpaper changes.
-
-    <img src="https://github.com/user-attachments/assets/7b4ff17a-53ac-4570-b002-101144917cdf" alt="image" width="200" />
 
      and Music playback.
 
