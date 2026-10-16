@@ -243,7 +243,7 @@ su -c getprop persist.sys.fflag.override.settings_enable_monitor_phantom_procs
     <img src="https://github.com/user-attachments/assets/9556cb44-06e1-4971-9d1d-5c1d923a74f2" alt="illogical-impulse logo" style="float:left; width:175px;">
 </div>
 
-Widget system: Awesome Termux
+Widget system: Termux Desktop Awesome 
 
 
 <div align="center">
