@@ -92,11 +92,25 @@ def copy_into(source: Path, dest_dir: Path, ignore=None):
     """Copy a file or a folder INTO dest_dir (keeping its name). Never touches the repo."""
     dest_dir.mkdir(parents=True, exist_ok=True)
     target = dest_dir / source.name
-    if source.is_dir():
-        shutil.copytree(source, target, dirs_exist_ok=True, ignore=ignore)
-    else:
-        shutil.copy2(source, target)
+    try:
+        if source.is_dir():
+            copy_tree(source, target, ignore)
+        else:
+            shutil.copy2(source, target)
+    except (OSError, shutil.Error) as e:
+        warn(f"Some files of {source.name} could not be copied (continuing): {str(e)[:120]}")
     return target
+
+
+def copy_tree(source: Path, target: Path, ignore=None):
+    """copytree that KEEPS symlinks as symlinks (icon themes have broken/dangling ones, which
+    made a plain copytree abort) and never stops because of a single bad file."""
+    try:
+        shutil.copytree(source, target, symlinks=True, dirs_exist_ok=True,
+                        ignore=ignore, ignore_dangling_symlinks=True)
+    except shutil.Error as e:
+        # copytree reports every failed file at the end; the rest was copied already
+        warn(f"{len(e.args[0])} file(s) of {source.name} were skipped (broken links).")
 
 
 def append_once(path: Path, marker: str, block: str):
@@ -162,7 +176,10 @@ def deploy_config():
 
     # Never overwrite the user's awesome setup silently
     if src("config", "awesome").is_dir():
-        backup_existing(CONFIG / "awesome")
+        old_rc, new_rc = CONFIG / "awesome/rc.lua", src("config", "awesome", "rc.lua")
+        same = old_rc.is_file() and new_rc.is_file() and old_rc.read_bytes() == new_rc.read_bytes()
+        if not same:
+            backup_existing(CONFIG / "awesome")
 
     config_items = [
         "audacious", "awesome", "cava", "flameshot", "gtk-3.0", "neofetch",
@@ -189,7 +206,7 @@ def deploy_config():
     if layouts_src.is_dir():
         layouts_dst = PREFIX / "share/awesome/themes/default/layouts"
         layouts_dst.mkdir(parents=True, exist_ok=True)
-        shutil.copytree(layouts_src, layouts_dst, dirs_exist_ok=True)
+        copy_tree(layouts_src, layouts_dst)
 
     # Executables -> $PREFIX/bin
     for exe in ("panes", "colortest", "sfetch"):
@@ -207,6 +224,38 @@ def deploy_config():
 
     if src("config", "nvim").is_dir():
         copy_into(src("config", "nvim"), HOME / ".local/share")
+
+
+def ensure_rubato():
+    """lib/rubato is a git SUBMODULE upstream: a plain `git clone` of the repo leaves it EMPTY and
+    the animations silently do nothing. If timed.lua is missing, fetch rubato here."""
+    dest = CONFIG / "awesome/lib/rubato"
+    if (dest / "timed.lua").is_file() or not (CONFIG / "awesome").is_dir():
+        return
+    info("lib/rubato is empty (git submodule). Downloading rubato...")
+    if dest.is_dir() and not any(dest.iterdir()):
+        dest.rmdir()
+    if dest.exists():
+        warn(f"{dest} is not empty but has no timed.lua; skipping download.")
+        return
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    if run(f"git clone --depth 1 https://github.com/andOrlando/rubato {dest}"):
+        shutil.rmtree(dest / ".git", ignore_errors=True)    # plain files, not a nested repo
+    else:
+        warn("Could not download rubato (no internet / git?). Animations will use the built-in "
+             "engine. Later: git clone --depth 1 https://github.com/andOrlando/rubato " + str(dest))
+
+
+def patch_rubato():
+    """rubato needs an integer for the timer interval on Lua 5.3+/5.4 (Termux):
+    initial_dt * 1000  ->  math.floor(initial_dt * 1000)   (same as the manual sed, idempotent)."""
+    timed = CONFIG / "awesome/lib/rubato/timed.lua"
+    if not timed.is_file():
+        return
+    text = timed.read_text()
+    if "initial_dt * 1000" in text and "math.floor(initial_dt * 1000)" not in text:
+        timed.write_text(text.replace("initial_dt * 1000", "math.floor(initial_dt * 1000)"))
+        info("Patched lib/rubato/timed.lua (integer timer interval).")
 
 
 def migrate_legacy_eww():
@@ -230,7 +279,7 @@ def migrate_legacy_eww():
             if target.exists():
                 continue                      # like `cp -rn`
             if item.is_dir():
-                shutil.copytree(item, target)
+                copy_tree(item, target)
             else:
                 shutil.copy2(item, target)
     for sh_file in (awesome / "scripts").glob("*.sh"):
@@ -252,7 +301,7 @@ def install_fonts_and_cursor():
 
         # Remaining fonts -> ~/.local/share/fonts   (xfce4 and cursor are not fonts)
         skip = shutil.ignore_patterns("xfce4", "Bibata-Material-Cloud-Light")
-        shutil.copytree(fonts, HOME / ".local/share/fonts", dirs_exist_ok=True, ignore=skip)
+        copy_tree(fonts, HOME / ".local/share/fonts", skip)
         run("fc-cache -fv > /dev/null")
 
     # Termux terminal font
@@ -260,7 +309,9 @@ def install_fonts_and_cursor():
     if font_src.exists():
         (HOME / ".termux").mkdir(parents=True, exist_ok=True)
         shutil.copy2(font_src, HOME / ".termux/font.ttf")
-        run("termux-reload-settings")
+        # NO se llama termux-reload-settings aquí: relanza la actividad de Termux y en algunos
+        # equipos (Android 12) la app se cierra con "Wrong state class ... View State", matando
+        # el instalador a medias. Se hace al final y solo si se pide con --reload.
 
 
 def setup_shells():
@@ -299,6 +350,8 @@ def parse_args():
     g.add_argument("--pokeget", action="store_true", help="install pokeget without asking")
     g.add_argument("--no-pokeget", action="store_true", help="skip pokeget without asking")
     p.add_argument("--no-packages", action="store_true", help="skip pkg/pip, only copy configs")
+    p.add_argument("--reload", action="store_true",
+                   help="run termux-reload-settings at the very end (can close Termux on some phones)")
     p.add_argument("--force", action="store_true", help="run even if this is not Termux")
     return p.parse_args()
 
@@ -333,10 +386,17 @@ def main():
 
     deploy_config()
     migrate_legacy_eww()
+    ensure_rubato()
+    patch_rubato()
     install_fonts_and_cursor()
     setup_shells()
 
     print(f"{Colors.GREEN}[✓] Installation finished!{Colors.RESET}")
+    if args.reload:
+        run("termux-reload-settings")
+    else:
+        warn("To apply the new Termux font/colors: close Termux completely (swipe it away) and "
+             "open it again. (termux-reload-settings was NOT run on purpose; use --reload to run it.)")
     print(f"{Colors.BLUE}    Start the desktop with:{Colors.RESET}")
     print("      termux-x11 :0 &   then   DISPLAY=:0 awesome")
     print(f"{Colors.BLUE}    If awesome restarts once on the first launch, that is the cursor theme "
