@@ -1,5 +1,6 @@
 -- rc.lua for AwesomeWM on Termux X11
--- Compatible with: picom, feh, eww, xfce4-terminal
+-- Compatible with: picom, feh, rofi, xfce4-terminal  (sin eww: bar, dashboard1 y
+-- notifications ahora son módulos Lua con animaciones rubato)
 
 -- =========================================
 -- LIBRARIES
@@ -10,6 +11,135 @@ require("awful.autofocus")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 local naughty = require("naughty")
+local notifs = require("notifications")
+
+-- =========================================
+-- CURSOR POR DEFECTO: Bibata-Material-Cloud-Light
+-- =========================================
+-- Copiá la carpeta  Bibata-Material-Cloud-Light  (la que tiene  cursors/  adentro) a
+-- ~/.config/awesome/fonts/   (también la encuentra en ~/.config/awesome/ y en
+-- ~/.config/awesome-vertical/fonts/).  Si no aparece, usa capitaine-cursors-light como antes.
+--
+-- Por qué esto va ANTES de todo lo demás: Awesome carga sus propios cursores (los de la barra,
+-- el dashboard, los popups...) UNA sola vez al arrancar, leyendo  Xcursor.theme  de xrdb. En el
+-- rc.lua anterior el tema se aplicaba después (autostart), y eso solo le llegaba a las apps de
+-- afuera: sobre la barra el puntero salía distinto. Acá se deja el tema listo en xrdb y, si
+-- Awesome había arrancado con otro, se reinicia UNA vez (antes de lanzar picom, feh, etc.).
+local CURSOR = {
+    theme        = "Bibata-Material-Cloud-Light",
+    fallback     = "capitaine-cursors-light",
+    size         = 32,
+    restart_once = true,
+}
+
+do
+    local gfs  = gears.filesystem
+    local home = os.getenv("HOME") or ""
+    local cfg  = (gfs.get_configuration_dir():gsub("/$", ""))
+    local logf = home .. "/.cache/awesome-cursor.log"
+
+    os.execute("mkdir -p " .. "'" .. home .. "/.cache'")
+    local function log(msg)
+        local f = io.open(logf, "a")
+        if f then f:write(os.date("%F %T "), msg, "\n") f:close() end
+    end
+    local function q(x) return "'" .. tostring(x):gsub("'", "'\\''") .. "'" end
+    local function has_theme(parent, name)
+        return gfs.dir_readable(parent .. "/" .. name .. "/cursors")
+    end
+
+    -- 1) dónde está la carpeta del tema
+    local prefix = os.getenv("PREFIX") or "/data/data/com.termux/files/usr"
+    local parents = {
+        cfg .. "/fonts", cfg, cfg .. "/cursors",
+        home .. "/.config/awesome-vertical/fonts",
+        home .. "/.icons", home .. "/.local/share/icons", prefix .. "/share/icons",
+    }
+    local theme, where = CURSOR.fallback, nil
+    for _, d in ipairs(parents) do
+        if has_theme(d, CURSOR.theme) then theme, where = CURSOR.theme, d break end
+    end
+    if where then
+        -- Xcursor busca en ~/.icons, ~/.local/share/icons y /usr/share/icons: si el tema está en
+        -- otra carpeta (la de awesome), se enlaza desde ~/.icons para que TODOS lo encuentren
+        local std = (where == home .. "/.icons") or (where == home .. "/.local/share/icons")
+                    or (where == prefix .. "/share/icons")
+        if not std and not has_theme(home .. "/.icons", theme) then
+            os.execute("mkdir -p " .. q(home .. "/.icons") .. " && ln -sfn " ..
+                       q(where .. "/" .. theme) .. " " .. q(home .. "/.icons/" .. theme))
+            log("enlace ~/.icons/" .. theme .. " -> " .. where .. "/" .. theme)
+        end
+        log("tema encontrado en " .. where)
+    else
+        log("no encontré " .. CURSOR.theme .. "; uso " .. CURSOR.fallback)
+    end
+
+    -- 2) ~/.Xresources (se conserva lo demás, solo se reemplazan las líneas Xcursor.*)
+    local xr = home .. "/.Xresources"
+    local keep = {}
+    local f = io.open(xr, "r")
+    if f then
+        for line in f:lines() do
+            if not line:match("^%s*Xcursor%.theme") and not line:match("^%s*Xcursor%.size") then
+                keep[#keep + 1] = line
+            end
+        end
+        f:close()
+    end
+    keep[#keep + 1] = "Xcursor.theme: " .. theme
+    keep[#keep + 1] = "Xcursor.size: " .. CURSOR.size
+    f = io.open(xr, "w")
+    if f then f:write(table.concat(keep, "\n"), "\n") f:close() end
+
+    -- 3) ¿con qué tema está arrancando Awesome? (lo que xrdb tiene AHORA)
+    local function xrdb_theme()
+        local p = io.popen("xrdb -query 2>/dev/null")
+        if not p then return nil end
+        local out = p:read("*a") or ""
+        p:close()
+        return out:match("[Xx]cursor%.theme:%s*([^\r\n]-)%s*[\r\n]")
+    end
+    local before = xrdb_theme()
+    if before ~= theme then
+        os.execute("xrdb -merge " .. q(xr) .. " 2>/dev/null")
+        local after = xrdb_theme()
+        log("xrdb: " .. tostring(before) .. " -> " .. tostring(after))
+        if CURSOR.restart_once and after == theme then
+            log("reinicio único de Awesome para que cargue el cursor " .. theme)
+            awesome.restart()
+        end
+    end
+
+    CURSOR.active = theme
+end
+
+-- =========================================
+-- HELPER: Rounded corners (terminal, thunar, audacious, firefox)
+-- =========================================
+-- Estas 4 apps son las únicas que llegan a titlebars_enabled = true (ver RULES
+-- más abajo), así que el radio se aplica en el signal "request::titlebars".
+-- OJO: c.shape recorta TODA la ventana, titlebar incluido (la barra de los 3
+-- botones no es una ventana aparte, así que su propio .shape no hace nada).
+-- Por eso el cliente se redondea con las 4 esquinas y así también quedan
+-- redondeadas las esquinas izquierdas, que son las de la barra de los 3 botones.
+local ROUND_RADIUS = 16
+
+local function shape_rounded(cr, w, h)
+    gears.shape.rounded_rect(cr, w, h, ROUND_RADIUS)
+end
+
+-- maximizada / pantalla completa: esquinas rectas
+local function update_round_shape(c)
+    if not c.valid or not c._round_ready then return end
+    if c.maximized or c.fullscreen then
+        c.shape = gears.shape.rectangle
+    else
+        c.shape = shape_rounded
+    end
+end
+
+client.connect_signal("property::maximized", update_round_shape)
+client.connect_signal("property::fullscreen", update_round_shape)
 
 -- =========================================
 -- HELPER: Identify specific applications ignoring case
@@ -55,7 +185,7 @@ end
 -- =========================================
 -- VARIABLES
 -- =========================================
-terminal = "xfce-terminal --hide-menubar --working-directory=$HOME"
+terminal = "xfce-terminal --hide-menubar"
 modkey = "Mod4"
 
 -- =========================================
@@ -67,19 +197,20 @@ beautiful.bg_normal = "#090E20"
 -- =========================================
 -- AUTOSTART
 -- =========================================
-awful.spawn.with_shell("bash /data/data/com.termux/files/home/.config/eww/scripts/watch_music.sh > /data/data/com.termux/files/usr/tmp/watch_music.log 2>&1 &")
-awful.spawn.with_shell("pkill -f '[m]anage_notifs.sh'; bash /data/data/com.termux/files/home/.config/eww/scripts/manage_notifs.sh &")
 awful.spawn.with_shell("feh --bg-fill ~/.config/Wallpaper/wallpaper.jpg &")
-awful.spawn.with_shell("picom &")
-awful.spawn.with_shell("pgrep -x eww || eww daemon &")
-awful.spawn.with_shell("sleep 2 && eww open bar")
+-- picom con blur para el powermenu (ventana "splash"); si no existe la config, picom a secas
 awful.spawn.with_shell([[
-    echo "Xcursor.theme: Bibata-Material-Cloud-Light" > ~/.Xresources
-    echo "Xcursor.size: 32" >> ~/.Xresources
-    export XCURSOR_SIZE=32
+  CONF="$HOME/.config/awesome/assets/picom/picom.conf"
+  pkill -x picom 2>/dev/null; sleep 0.3
+  if [ -f "$CONF" ]; then picom --config "$CONF" > "$HOME/.cache/picom.log" 2>&1 &
+  else picom & fi
+]])
+-- cursor de la raíz (fondo del escritorio): el mismo tema que ya dejó listo el bloque de arriba
+awful.spawn.with_shell(string.format([[
+    export XCURSOR_THEME='%s' XCURSOR_SIZE=%d
     xrdb -merge ~/.Xresources
     xsetroot -cursor_name left_ptr
-]])
+]], CURSOR.active, CURSOR.size))
 
 -- =========================================
 -- LAYOUTS
@@ -96,21 +227,29 @@ awful.layout.layouts = {
 -- =========================================
 awful.screen.connect_for_each_screen(function(s)
     awful.tag({ "1", "2", "3", "4", "5" }, s, awful.layout.layouts[1])
+
+    -- Dashboard (Super-botón del bar) y barra vertical, ahora en Lua
+    s.mydash = require("dashboard1").build(s)
+    s.mybar  = require("bar").build(s, {
+        on_dashboard = function() s.mydash.toggle() end,
+    })
 end)
+
+-- Panel de notificaciones + popups + aviso de canciones
+notifs.init()
 
 -- =========================================
 -- KEYS
 -- =========================================
 globalkeys = gears.table.join(
     awful.key({ "Control" }, "Return", function ()
-        awful.spawn.with_shell("bash ~/.config/eww/scripts/logger.sh 'Launchers' 'Launching!' 'Launching terminal, please wait...' ''")
-        awful.spawn("xfce4-terminal --hide-menubar --working-directory=$HOME")
+        notifs.launching("terminal")
+        awful.spawn("xfce4-terminal --hide-menubar")
     end),
 
     awful.key({ "Mod1" }, "r", awesome.restart),
     awful.key({ "Mod1" }, "q", awesome.quit),
     awful.key({ "Control" }, "d", function () awful.spawn.with_shell("rofi -show drun") end),
-    awful.key({ "Mod1" }, "d", function () awful.spawn.with_shell("eww close launcher") end),
 
     awful.key({ "Control" }, "Left",  function () smart_move(-20, 0) end),
     awful.key({ "Control" }, "Down",  function () smart_move(0, 20) end),
@@ -124,25 +263,26 @@ globalkeys = gears.table.join(
 
     -- Flameshot (Alt + /)
     awful.key({ "Mod1" }, "/", function ()
-        local cmd = "mkdir -p $HOME/Pictures && " ..
-                    "FILE=$HOME/storage/downloads/Screenshot_$(date +%Y%m%d_%H%M%S).png && " ..
-                    "flameshot full -r > $FILE && " ..
-                    "eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false & " ..
-                    "bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot Is Ready!' 'Screenshot saved successfully' $FILE"
-        awful.spawn.with_shell(cmd)
+        local file = os.getenv("HOME") .. "/storage/downloads/Screenshot_" .. os.date("%Y%m%d_%H%M%S") .. ".png"
+        local cmd = "mkdir -p $HOME/Pictures && flameshot full -r > '" .. file .. "'"
+        awful.spawn.easy_async_with_shell(cmd, function()
+            notifs.screenshot_ready(file)
+        end)
     end),
 
     -- Quick Flameshot GUI (Alt + -)
     awful.key({ "Mod1" }, "-", function ()
-        local cmd = "FILE=$HOME/storage/downloads/Screenshot_$(date +%Y%m%d_%H%M%S).png; " ..
-                    "flameshot gui --accept-on-select -r > \"$FILE\"; " ..
-                    "if [ -s \"$FILE\" ]; then " ..
-                    "  ( eww -c ~/.config/eww/menu2 update show_flameshot=true && sleep 3 && eww -c ~/.config/eww/menu2 update show_flameshot=false ) & " ..
-                    "  bash ~/.config/eww/scripts/logger.sh 'Screenshot' 'Screenshot Is Ready!' 'Screenshot saved successfully' \"$FILE\"; " ..
-                    "else " ..
-                    "  rm -f \"$FILE\"; " ..
-                    "fi"
-        awful.spawn.with_shell(cmd)
+        local file = os.getenv("HOME") .. "/storage/downloads/Screenshot_" .. os.date("%Y%m%d_%H%M%S") .. ".png"
+        local cmd = "flameshot gui --accept-on-select -r > '" .. file .. "'; " ..
+                    "if [ -s '" .. file .. "' ]; then echo ok; else rm -f '" .. file .. "'; fi"
+        awful.spawn.easy_async_with_shell(cmd, function(out)
+            if out and out:match("ok") then notifs.screenshot_ready(file) end
+        end)
+    end),
+
+    -- Prueba rápida de popups (Alt + n)
+    awful.key({ "Mod1" }, "n", function ()
+        notifs.notify { app = "Test", title = "Popup de prueba", body = "Si ves esto, los popups funcionan." }
     end),
 
     awful.key({ "Control" }, "n", function ()
@@ -179,24 +319,22 @@ clientbuttons = gears.table.join(
     end)
 )
 
+-- menu1 (menú contextual) ahora es un módulo Lua: ~/.config/awesome/menu1/init.lua (show(x, y) / hide())
+local function menu1(fn, ...)
+    local ok, m = pcall(require, "menu1")
+    if ok and type(m) == "table" and type(m[fn]) == "function" then m[fn](...) end
+end
+
 root.buttons(gears.table.join(
-    -- =====================================
-    -- RIGHT CLICK -> EWW CONTEXT MENU
-    -- =====================================
+    -- RIGHT CLICK -> CONTEXT MENU
     awful.button({}, 3, function()
         local coords = mouse.coords()
-        local x = coords.x + 8
-        local y = coords.y + 8
-
-        awful.spawn.with_shell("eww -c ~/.config/eww/menu1 close menu1_5 2>/dev/null")
-        awful.spawn.with_shell(string.format("bash ~/.config/eww/scripts/launch.sh %d %d", x, y))
+        menu1("show", coords.x + 8, coords.y + 8)
     end),
 
-    -- =====================================
     -- LEFT CLICK -> CLOSE MENU
-    -- =====================================
     awful.button({}, 1, function()
-        awful.spawn.with_shell("eww -c ~/.config/eww/menu1 close menu1 menu1_5 2>/dev/null")
+        menu1("hide")
     end)
 ))
 
@@ -296,6 +434,11 @@ client.connect_signal("request::titlebars", function(c)
     -- HERE IS THE TRICK: We remove the name filter.
     -- If the window reaches this function, it is because the rules above allowed "titlebars_enabled = true"
     c.border_width = 0
+
+    -- Esquinas redondeadas en las 4 puntas (incluye las de la barra de los 3 botones)
+    c._round_ready = true
+    update_round_shape(c)
+
     local sidebar = awful.titlebar(c, {
         position = "left",
         size     = 40,
@@ -325,52 +468,16 @@ client.connect_signal("request::titlebars", function(c)
     }
 end)
 
--- Executed when OPENING any window
-client.connect_signal("manage", function(c)
-    -- Triggers the icon updater in Eww
-    awful.spawn.with_shell("bash ~/.config/eww/scripts/update_icons.sh")
-end)
-
--- Executed when CLOSING any window
-client.connect_signal("unmanage", function(c)
-    -- Triggers the icon updater in Eww
-    awful.spawn.with_shell("bash ~/.config/eww/scripts/update_icons.sh")
-end)
-
 -- =========================================
--- NOTIFICATION BRIDGE (NAUGHTY -> EWW)
+-- NOTIFICATION BRIDGE (NAUGHTY -> panel Lua)
 -- =========================================
 naughty.connect_signal("request::display", function(n)
-    local app = tostring(n.app_name or "System")
-    local title = tostring(n.title or "Notification")
-    local message = tostring(n.message or "")
-
-    app = app:gsub("'", "")
-    title = title:gsub("'", "")
-    message = message:gsub("'", "")
-
-    local script = "/data/data/com.termux/files/home/.config/eww/scripts/logger.sh"
-    local cmd = string.format("%s '%s' '%s' '%s' ''", script, app, title, message)
-
-    awful.spawn.with_shell(cmd)
-    naughty.destroy(n)
+    notifs.notify {
+        app   = tostring(n.app_name or "System"),
+        title = tostring(n.title or "Notification"),
+        body  = tostring(n.message or ""),
+    }
+    pcall(function() n:destroy() end)
 end)
 
--- =========================================
--- EWW LAYOUT ICON SYNC (IMAGES)
--- =========================================
-tag.connect_signal("property::layout", function(t)
-    local layout_name = awful.layout.getname(t.layout)
-    local theme_dir = "/data/data/com.termux/files/usr/share/awesome/themes/default/layouts/"
-
-    local img_path = theme_dir .. "tilew.png" -- 1: Grid (tile)
-
-    if layout_name == "floating" then
-        img_path = theme_dir .. "floatingw.png" -- 2: Floating
-    elseif layout_name == "max" then
-        img_path = theme_dir .. "maxw.png" -- 3: Maximized
-    end
-
-    awful.spawn.with_shell("eww update layout_image='" .. img_path .. "'")
-end)
-
+-- (El icono del layout y su tooltip ahora los maneja bar/init.lua directamente.)
