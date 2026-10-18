@@ -201,12 +201,14 @@ def deploy_config():
         for sh_file in scripts.glob("*.sh"):
             sh_file.chmod(0o755)
 
-    # Copy awesome layouts to default theme
+    # config/awesome/layouts  ->  $PREFIX/share/awesome/themes/default/layouts
     layouts_src = src("config", "awesome", "layouts")
     if layouts_src.is_dir():
-        layouts_dst = PREFIX / "share/awesome/themes/default/layouts"
-        layouts_dst.mkdir(parents=True, exist_ok=True)
-        copy_tree(layouts_src, layouts_dst)
+        theme_dir = PREFIX / "share/awesome/themes/default"
+        if not theme_dir.is_dir():
+            warn(f"{theme_dir} does not exist yet (is the 'awesome' package installed?). Creating it.")
+        copy_into(layouts_src, theme_dir)
+        info(f"Layouts copied to {theme_dir / 'layouts'}")
 
     # Executables -> $PREFIX/bin
     for exe in ("panes", "colortest", "sfetch"):
