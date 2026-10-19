@@ -282,11 +282,11 @@ Widget system: Termux Desktop Awesome
 ### The Desktop
 <img src="https://github.com/user-attachments/assets/cd4fad03-bbb0-4c43-bd5d-4aa0c90df4f5"> 
 
-#### Beautiful and Fully Functional Dashboard
+#### Beautiful and Fully Functional Dashboard (Opening/Closing events are animated with Rubato)
 
 <img src="https://github.com/user-attachments/assets/2a2dcba1-ca30-471a-8422-d8fd90c81c74" alt="Notification system">
 
-#### Beautiful And Fully Functional Notifications Center 
+#### Beautiful And Fully Functional Notifications Center (Opening/Closing events are animated with Rubato)
 
 
 <img src="https://github.com/user-attachments/assets/6a6b4a40-ecb1-4e8f-a878-f2c6739c7000" alt="Program to change wallpaper">
