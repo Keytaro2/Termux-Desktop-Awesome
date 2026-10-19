@@ -26,6 +26,7 @@ local CFG = {
   popup_w       = 380,   -- :width "380px"
   popup_margin  = 20,    -- :x "-20px"
   popup_y       = 15,    -- :y "15px"
+  music_cover   = 160,   -- carátula de la tarjeta de música (antes 100): más grande, como la referencia
   panel_w       = 500,   -- :width "500px"
   panel_h_pct   = 0.97,  -- :height "97%"
 
@@ -312,7 +313,7 @@ local function build_item(item)
   local has_img  = item.image and item.image ~= "" and item.image ~= "null"
 
   if is_music then
-    item._cover = item._cover or ui.image(item.image, 100, 100, ui.rrect(12))
+    item._cover = item._cover or ui.image(item.image, CFG.music_cover, CFG.music_cover, ui.rrect(14))
     local texts = wibox.widget {
       ui.label { text = item.title, size = 28, bold = true, halign = "center", wrap = true },
       ui.label { text = item.body,  size = 20, halign = "center", wrap = true },
