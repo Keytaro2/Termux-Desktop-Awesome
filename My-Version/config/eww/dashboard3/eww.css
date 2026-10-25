@@ -1,0 +1,24 @@
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", "Quicksand", sans-serif;
+}
+
+/* Thinner sliders for smaller targets */
+scale trough {
+  background-color: #111827;
+  border-radius: 50px;
+  min-height: 32px; /* Reduced from 38px */
+}
+
+scale highlight {
+  background-color: #7aa2f7;
+  border-radius: 50px;
+}
+
+label {
+  font-family: "JetBrainsMono Nerd Font";
+}
+
+button {
+  transition: all 0.2s ease;
+}

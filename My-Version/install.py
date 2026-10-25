@@ -53,18 +53,18 @@ def main():
 
     # 5. Fonts and Appearance
 
-    # Mover xfce4 directamente desde la carpeta fonts del repositorio
-    if os.path.exists("fonts/xfce4"):
-        run("mv fonts/xfce4 ~/.local/share/")
+    # Mover xfce4 directamente desde la carpeta fonts de la raíz del repo
+    if os.path.exists("../fonts/xfce4"):
+        run("cp -r ../fonts/xfce4 ~/.local/share/")
 
     # Mover el tema de cursor a la ruta de iconos del sistema Termux
-    if os.path.exists("fonts/capitaine-cursors-light"):
+    if os.path.exists("../fonts/capitaine-cursors-light"):
         run("mkdir -p $PREFIX/share/icons")
-        run("mv fonts/capitaine-cursors-light $PREFIX/share/icons/")
+        run("cp -r ../fonts/capitaine-cursors-light $PREFIX/share/icons/")
 
     # Copiar el resto de las fuentes (xfce4 ya no estará aquí)
-    if os.path.isdir("fonts"):
-        run("cp -r fonts ~/.local/share/")
+    if os.path.isdir("../fonts"):
+        run("cp -r ../fonts ~/.local/share/")
         run("fc-cache -fv > /dev/null")
 
     dot_items = [".themes", ".icons", ".cache"]

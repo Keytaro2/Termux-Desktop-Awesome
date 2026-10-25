@@ -1,0 +1,54 @@
+* {
+  all: unset;
+}
+
+.menu {
+  background-color: #090E20;
+  color: #c0caf5;
+  border-radius: 10px;
+  padding: 25px;
+  min-width: 250px;
+}
+
+.menu-item {
+  color: #c0caf5; /* Default color for text */
+  font-size: 23px;
+  font-weight: 500;
+  padding: 10px 10px;
+  border-radius: 10px;
+  transition: 200ms;
+}
+
+.menu-item:hover {
+  background-color: rgba(192, 202, 245, 0.08);
+}
+
+.menu-header {
+  font-size: 20px;
+  margin-bottom: 15px;
+  padding-left: 10px;
+  opacity: 0.7;
+}
+
+.menu-icon {
+  font-size: 23px;
+}
+
+/* Specific icon colors */
+.icon-browser { color: #ff9e64; }
+.icon-folder  { color: #73daca; }
+.icon-term    { color: #a9b1d6; }
+.icon-fav     { color: #e0af68; }
+.icon-openbox { color: #c0caf5; }
+.icon-exit    { color: #f7768e; }
+
+.arrow {
+  font-size: 14px;
+  color: #c0caf5;
+}
+
+.separator {
+  background-color: rgba(192, 202, 245, 0.1);
+  min-height: 2px;
+  margin: 0px 0;
+}

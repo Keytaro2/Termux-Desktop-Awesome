@@ -1,0 +1,22 @@
+(defwindow date1
+    :monitor 0
+    :geometry (geometry :x "170px" :y "275px" :width "280px" :height "280px" :anchor "center")
+    :windowtype "normal"
+    :wm-ignore false
+    (cal))
+
+(defpoll time :interval "10s" `date +'{"day":"%d","month":"%m","year":"%Y","monthname":"%B"}'`)
+
+(defwidget cal []
+    (box :class "cal-box" :orientation "v" :space-evenly false
+         ;; New custom header, centered and joined
+         (box :class "header-box" :orientation "h" :halign "center" :spacing 10
+              (label :text "${time.monthname}")
+              (label :text "${time.year}"))
+         
+         (calendar :day {time.day}
+                   :month {time.month}
+                   :year {time.year}
+                   :show-details false
+                   :show-heading false ;; We hide the native
+                   :show-day-names true)))
