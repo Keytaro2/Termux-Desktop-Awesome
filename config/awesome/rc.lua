@@ -261,19 +261,19 @@ globalkeys = gears.table.join(
     awful.key({ "Mod1" }, "Up",    function() smart_resize(0, -20) end),
     awful.key({ "Mod1" }, "Right", function() smart_resize(20, 0) end),
 
-    -- Flameshot (Alt + /)
+    -- Screenshot pantalla completa con maim (Alt + /)
     awful.key({ "Mod1" }, "/", function ()
         local file = os.getenv("HOME") .. "/storage/downloads/Screenshot_" .. os.date("%Y%m%d_%H%M%S") .. ".png"
-        local cmd = "mkdir -p $HOME/Pictures && flameshot full -r > '" .. file .. "'"
-        awful.spawn.easy_async_with_shell(cmd, function()
-            notifs.screenshot_ready(file)
+        local cmd = "mkdir -p \"$HOME/storage/downloads\" && maim -u '" .. file .. "' && echo ok"
+        awful.spawn.easy_async_with_shell(cmd, function(out)
+            if out and out:match("ok") then notifs.screenshot_ready(file) end
         end)
     end),
 
-    -- Quick Flameshot GUI (Alt + -)
+    -- Screenshot de area con slop + maim (Alt + -)
     awful.key({ "Mod1" }, "-", function ()
         local file = os.getenv("HOME") .. "/storage/downloads/Screenshot_" .. os.date("%Y%m%d_%H%M%S") .. ".png"
-        local cmd = "flameshot gui --accept-on-select -r > '" .. file .. "'; " ..
+        local cmd = "mkdir -p \"$HOME/storage/downloads\"; geo=$(slop -b 6 -c 0.686,0.780,0.980,1) && maim -u -g \"$geo\" '" .. file .. "'; " ..
                     "if [ -s '" .. file .. "' ]; then echo ok; else rm -f '" .. file .. "'; fi"
         awful.spawn.easy_async_with_shell(cmd, function(out)
             if out and out:match("ok") then notifs.screenshot_ready(file) end

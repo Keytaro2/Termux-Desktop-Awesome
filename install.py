@@ -72,11 +72,15 @@ def run(cmd):
     return subprocess.run(cmd, shell=True).returncode == 0
 
 
-def ask_yes_no(question, assume_yes=False):
+def ask_yes_no(question, assume_yes=False, default=False):
+    """Ask a yes/no question. Pressing Enter returns `default` (No unless told otherwise)."""
     if assume_yes:
         return True
+    hint = "(yes/No)" if not default else "(Yes/no)"
     while True:
-        answer = input(f"{Colors.YELLOW}{question} (yes/no): {Colors.RESET}").strip().lower()
+        answer = input(f"{Colors.YELLOW}{question} {hint}: {Colors.RESET}").strip().lower()
+        if answer == "":
+            return default
         if answer in ("yes", "y"):
             return True
         if answer in ("no", "n"):
@@ -143,13 +147,16 @@ def looks_like_termux():
 def install_packages(install_pokeget):
     # NOTE: eww is gone: bar, dashboard, menus, notifications and powermenu are Lua now.
     base = (
-        "x11-repo tur-repo python python-pip git wget curl termux-x11-nightly pulseaudio "
+        "python python-pip git wget curl termux-x11-nightly pulseaudio "
         "firefox zsh kitty termux-api virglrenderer-android fontconfig-utils freetype xfce4 "
-        "jq lxappearance neovim-nightly rust chafa flameshot pygobject xorg-xsetroot xorg-xrdb"
+        "jq lxappearance neovim-nightly rust chafa slop maim pygobject xorg-xsetroot xorg-xrdb"
     )
     apps = (
         "audacious cava awesome rofi thunar picom neofetch feh starship lsd w3m"
     )
+    info("Enabling extra repositories (x11-repo, tur-repo)...")
+    if not run("pkg install -y x11-repo tur-repo"):
+        warn("Could not enable x11-repo/tur-repo (continuing).")
     info("Installing necessary packages...")
     if not run(f"pkg install -y {base}"):
         warn("Some base packages failed to install (continuing).")
@@ -182,7 +189,7 @@ def deploy_config():
             backup_existing(CONFIG / "awesome")
 
     config_items = [
-        "audacious", "awesome", "cava", "flameshot", "gtk-3.0", "neofetch",
+        "audacious", "awesome", "cava", "gtk-3.0", "neofetch",
         "picom", "rofi", "Thunar", "Wallpaper", "xfce4", "starship.toml",
         "folder_icon.sh",
     ]
@@ -378,7 +385,7 @@ def main():
         else:
             print(f"{Colors.YELLOW}[!] Warning: 'pokeget' compiles with cargo and is a HEAVY package.")
             print(f"    It may take a long time and consume a lot of storage and battery.{Colors.RESET}")
-            install_pokeget = ask_yes_no("Do you want to install pokeget?", args.yes)
+            install_pokeget = ask_yes_no("Do you want to install pokeget?", args.yes, default=False)
 
     info("Preparing the environment......")
     sleep(1)

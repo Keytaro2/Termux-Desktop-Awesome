@@ -3,7 +3,7 @@
 --
 -- yuck: 280x210 · anchor center · x -885px · y 160px
 -- scss: .menu-box -> fondo #090E20, radio 15, padding 5 (siempre visible)
--- Fila 1: terminal, thunar, firefox, audacious, flameshot   (spacing 20)
+-- Fila 1: terminal, thunar, firefox, audacious, screenshot   (spacing 20)
 -- Fila 2: notificación, scrcpy                              (spacing 20)
 -- Entre filas: spacing 20. Iconos de 34px, cada uno con su color.
 --
@@ -11,7 +11,7 @@
 -- Acá se calculan solas:
 --   term/thunar/firefox/audacious -> mirando los clientes de Awesome (manage/unmanage)
 --   scrcpy                        -> pgrep cada 1 s, SOLO mientras el menú está abierto
---   flameshot / notif             -> M.flash("flameshot") / M.flash("notif") los prende 3 s
+--   screenshot / notif             -> M.flash("screenshot") / M.flash("notif") los prende 3 s
 --
 -- Uso:  require("menu2").toggle()
 
@@ -42,7 +42,7 @@ local ICONS = {
     { "thunar",    0xF0770, "#f2d68f" },
     { "firefox",   0xF0239, "#ff9e64" },
     { "audacious", 0xF075A, "#c678dd" },
-    { "flameshot", 0xF0E51, "#ed6a7f" },
+    { "screenshot", 0xF0E51, "#ed6a7f" },
   },
   row2 = {
     { "notif",  0xF009A, "#61afef" },
@@ -59,7 +59,7 @@ local MATCH = {
 }
 
 local state = { term = false, thunar = false, firefox = false, audacious = false,
-                flameshot = false, notif = false, scrcpy = false }
+                screenshot = false, notif = false, scrcpy = false }
 
 local win, row1, row2, labels, scrcpy_timer
 local flash_timers = {}
@@ -182,8 +182,8 @@ function M.toggle()
   if win and win.visible then M.hide() else M.show() end
 end
 
--- Prende un icono unos segundos (equivale a: eww update show_flameshot=true; sleep 3; ...=false)
---   require("menu2").flash("flameshot")      require("menu2").flash("notif", 5)
+-- Prende un icono unos segundos (equivale a: eww update show_screenshot=true; sleep 3; ...=false)
+--   require("menu2").flash("screenshot")      require("menu2").flash("notif", 5)
 function M.flash(key, secs)
   if state[key] == nil then return end
   set(key, true)

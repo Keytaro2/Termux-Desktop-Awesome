@@ -7,7 +7,7 @@
 --            botón "Go and Enjoy!" (#2dd4bf, radio 8, padding 6 16, 16px bold) ·
 --            tooltip flotante (240x52) al pasar el mouse por los modos.
 --
--- Flujo (igual que el yuck): cierra el menú -> espera DELAY s -> flameshot -> guarda en
+-- Flujo (igual que el yuck): cierra el menú -> espera DELAY s -> maim (full) / slop+maim (area) -> guarda en
 -- ~/storage/downloads/Screenshot_<fecha>.png -> popup "Screenshot Is Ready!" + icono en menu2.
 --
 -- Animación: copiada de AlphaTechnolog/dotfiles (ui/screenshot-center/init.lua): rubato sobre el ALTO
@@ -98,17 +98,17 @@ local function capture()
   local cmd
   if mode == "full" then
     cmd = "sleep " .. d .. "; mkdir -p \"$HOME/storage/downloads\"; " ..
-          "flameshot full -r > '" .. file .. "'; echo ok"
+          "maim -u '" .. file .. "' && echo ok"
   else
     cmd = "sleep " .. d .. "; mkdir -p \"$HOME/storage/downloads\"; " ..
-          "flameshot gui --accept-on-select -r > '" .. file .. "'; " ..
+          "geo=$(slop -b 6 -c 0.686,0.780,0.980,1) && maim -u -g \"$geo\" '" .. file .. "'; " ..
           "if [ -s '" .. file .. "' ]; then echo ok; else rm -f '" .. file .. "'; fi"
   end
   -- pequeña pausa para que el menú ya no esté en pantalla cuando se captura
   cmd = "sleep 0.25; " .. cmd
   awful.spawn.easy_async_with_shell(cmd, function(out)
     if out and out:match("ok") then
-      -- screenshot_ready ya prende el icono de flameshot en menu2
+      -- screenshot_ready ya prende el icono de screenshot en menu2
       require("notifications").screenshot_ready(file)
     end
   end)

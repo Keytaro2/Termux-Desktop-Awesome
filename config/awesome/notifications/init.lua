@@ -420,7 +420,7 @@ function M.notify(n)
   if n.popup ~= false then
     flash_icon("notif")
     if n.kind == "screenshot" then
-      flash_icon("flameshot")
+      flash_icon("screenshot")
       show_popup { kind = "screenshot", header = "Screenshot",
                    title = item.title, body = item.body, image = item.image }
     elseif item.app == "Music" or item.app == "Audacious" then
