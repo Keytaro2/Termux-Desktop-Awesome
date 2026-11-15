@@ -13,7 +13,7 @@
 --   scrcpy                        -> pgrep cada 1 s, SOLO mientras el menú está abierto
 --   screenshot / notif             -> M.flash("screenshot") / M.flash("notif") los prende 3 s
 --
--- Uso:  require("menu2").toggle()
+-- Uso:  require("ui.menu2").toggle()
 
 local awful = require("awful")
 local gears = require("gears")
@@ -183,7 +183,7 @@ function M.toggle()
 end
 
 -- Prende un icono unos segundos (equivale a: eww update show_screenshot=true; sleep 3; ...=false)
---   require("menu2").flash("screenshot")      require("menu2").flash("notif", 5)
+--   require("ui.menu2").flash("screenshot")      require("ui.menu2").flash("notif", 5)
 function M.flash(key, secs)
   if state[key] == nil then return end
   set(key, true)
@@ -195,7 +195,7 @@ function M.flash(key, secs)
   end)
 end
 
--- Control manual: require("menu2").set("notif", true)
+-- Control manual: require("ui.menu2").set("notif", true)
 function M.set(key, value)
   if state[key] ~= nil then set(key, value) end
 end

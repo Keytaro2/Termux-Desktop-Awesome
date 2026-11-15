@@ -13,7 +13,7 @@
 --   solo se dibujan las filas que el mes necesita (5 o 6) y la ventana se ajusta a ellas.
 -- scss: .cal-box -> fondo #090E20 · calendar -> texto #c0caf5
 --
--- Uso:  require("date1").toggle()      (la barra ya lo llama con ui.call)
+-- Uso:  require("ui.date1").toggle()      (la barra ya lo llama con ui.call)
 
 local awful  = require("awful")
 local gears  = require("gears")

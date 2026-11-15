@@ -5,7 +5,7 @@
 -- La barra es "exclusive": reserva espacio (struts) para que las ventanas no la tapen.
 --
 -- Uso (rc.lua):
---   s.mybar = require("bar").build(s, { on_dashboard = function() s.mydash.toggle() end })
+--   s.mybar = require("ui.bar").build(s, { on_dashboard = function() s.mydash.toggle() end })
 
 local awful = require("awful")
 local gears = require("gears")
@@ -91,14 +91,14 @@ function M.build(s, opts)
   -- ---------- TOP: lanzadores ----------
   local function launching(what, cmd)
     return function()
-      require("notifications").launching(what)
+      require("ui.notifications").launching(what)
       awful.spawn.with_shell(cmd .. " &")
     end
   end
 
   local top = wibox.widget {
     (launcher(I.app_launcher, 30, function() awful.spawn.with_shell("rofi -show drun &") end)),
-    (launcher(I.image, 25, function() ui.call("screnshoot", "toggle") end)),
+    (launcher(I.image, 25, function() ui.call("ui.screnshoot", "toggle") end)),
     (launcher(I.browser, 30, launching("browser", "firefox"))),
     (launcher(I.terminal, 30, launching("terminal", "xfce4-terminal --hide-menubar"))),
     (launcher(I.folder, 20, launching("explorer", "thunar"))),
@@ -207,7 +207,7 @@ function M.build(s, opts)
     awful.spawn.with_shell("bash " .. ui.dir .. "scripts/toggle_mute.sh &")
   end)
 
-  local bell_w = launcher(I.bell, 22, function() require("notifications").toggle_panel() end)
+  local bell_w = launcher(I.bell, 22, function() require("ui.notifications").toggle_panel() end)
 
   local qs_inner = wibox.widget {
     wifi_w, vol_w, bell_w,
@@ -253,7 +253,7 @@ function M.build(s, opts)
   local min_w,  set_min  = ui.label { text = "00", size = 24, bold = true, color = C.blue, halign = "center" }
   local clock = click(
     wibox.widget { hour_w, min_w, layout = wibox.layout.fixed.vertical },
-    function() ui.call("date1", "toggle") end)
+    function() ui.call("ui.date1", "toggle") end)
 
   local last_h, last_m
   gears.timer {
@@ -308,10 +308,10 @@ function M.build(s, opts)
   layout_btn:connect_signal("mouse::leave", function() tooltip.visible = false end)
 
   -- ---------- POWER ----------
-  local power_w = launcher(I.power, 23, function() ui.call("powermenu", "toggle") end)
+  local power_w = launcher(I.power, 23, function() ui.call("ui.powermenu", "toggle") end)
 
   local bottom = wibox.widget {
-    (launcher(I.arrow, 23, function() ui.call("menu2", "toggle") end)),
+    (launcher(I.arrow, 23, function() ui.call("ui.menu2", "toggle") end)),
     (launcher(I.dashboard, 23, function()
       if opts.on_dashboard then opts.on_dashboard() end
     end)),

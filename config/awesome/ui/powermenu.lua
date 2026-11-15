@@ -18,7 +18,7 @@
 -- Si ese script no existe, "logout" cierra Awesome igual.
 --
 -- Cerrar: botón de la X, o la tecla Escape.
--- Uso:  require("powermenu").toggle()
+-- Uso:  require("ui.powermenu").toggle()
 
 local awful = require("awful")
 local gears = require("gears")
@@ -87,7 +87,7 @@ local function power(action)
     elseif action == "logout" then
       awesome.quit()
     else
-      require("notifications").notify {
+      require("ui.notifications").notify {
         app = "Power", title = "poweroff.sh no encontrado",
         body = "Copiá poweroff.sh a ~/.config/awesome/scripts/",
       }

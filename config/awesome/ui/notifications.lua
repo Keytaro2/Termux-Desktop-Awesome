@@ -1,8 +1,8 @@
--- notifications/init.lua
+-- ui/notifications.lua
 -- Port a Lua de Notifications/eww.yuck (panel + popups) con animaciones rubato.
 --
 -- API:
---   local N = require("notifications")
+--   local N = require("ui.notifications")
 --   N.init()                          -- una vez, desde rc.lua
 --   N.notify { app=, title=, body=, image=, kind=, store= }
 --   N.launching("terminal")           -- reemplaza logger.sh 'Launchers' ...
@@ -22,22 +22,20 @@ local M = {}
 -- =========================================
 -- CONFIG (mismas medidas que el .yuck)
 -- =========================================
+local sysnotify = require("ui.sysnotify") -- popup (toast) + puente naughty, ver ui/sysnotify.lua
+
 local CFG = {
-  popup_w       = 380,   -- :width "380px"
-  popup_margin  = 20,    -- :x "-20px"
-  popup_y       = 15,    -- :y "15px"
   music_cover   = 160,   -- carátula de la tarjeta de música (antes 100): más grande, como la referencia
+  panel_margin  = 20,    -- :x "-20px" (mismo offset que usa el popup en sysnotify, para quedar alineados)
+  panel_y       = 15,    -- :y "15px"
   panel_w       = 500,   -- :width "500px"
   panel_h_pct   = 0.97,  -- :height "97%"
 
-  -- Animaciones (rubato)
-  popup_dur     = 0.35,  -- segundos (rubato como notifcenter del repo, sin fade)
+  -- Animación del panel (rubato)
   panel_dur     = 0.35,
 
-  popup_time         = 4,   -- segundos visible (popups simples)
-  popup_time_actions = 6,   -- popups con botones (Copy/Delete, Previous/Next)
-  removed_delay      = 1.2, -- cuánto se ve "Notification removed successfully"
-  drag_step          = 90,  -- px de arrastre (touch) por cada tarjeta
+  removed_delay = 1.2, -- cuánto se ve "Notification removed successfully"
+  drag_step     = 90,  -- px de arrastre (touch) por cada tarjeta
 }
 
 local scripts_dir = ui.dir .. "scripts/"
@@ -51,7 +49,6 @@ local first   = 1    -- primera tarjeta visible (scroll)
 
 local panel, panel_anim, panel_target, panel_closed_x
 local list_layout
-local pop            -- popup actual { popup, anim, timer }
 
 local function primary()
   return screen.primary or screen[1]
@@ -70,24 +67,12 @@ end
 -- =========================================
 -- PIEZAS COMUNES
 -- =========================================
--- clickable SIN mano en las notificaciones
+-- clickable SIN mano en las notificaciones (lo usa la tarjeta del panel)
 local function click(w, fn) return ui.clickable(w, fn, true) end
-
-local function pill_button(text, fn)
-  local lbl = ui.label { text = text, size = 14, bold = true, halign = "center", color = C.fg }
-  return click(
-    ui.box(lbl, { bg = C.btn_bg, radius = 20, pad = { 8, 8, 8, 8 }, border = 1, border_color = C.btn }),
-    fn)
-end
-
-local function separator()
-  return wibox.widget { forced_height = 1, bg = C.fg, widget = wibox.container.background }
-end
 
 -- =========================================
 -- ACCIONES
 -- =========================================
-local show_popup -- forward
 
 -- Log de errores de los avisos (por si algo falla en silencio):  cat ~/.cache/awesome-notify.log
 local LOG = (os.getenv("HOME") or "") .. "/.cache/awesome-notify.log"
@@ -134,152 +119,6 @@ end
 local function do_screenshot_delete(file)
   log("clic en Delete (solo aviso, no borra): " .. tostring(file))
   confirm("Screenshot removed successfully.")
-end
-
--- =========================================
--- POPUPS
--- =========================================
-local function hide_popup(instant)
-  if not pop then return end
-  local cur = pop
-  if cur.timer then cur.timer:stop() end
-  if instant then
-    cur.popup.visible = false
-    pop = nil
-  else
-    cur.closing = true
-    cur.anim:set(cur.closed_x)
-  end
-end
-
-local function build_popup_card(spec, close)
-  -- CABECERA
-  local header
-  if spec.kind == "screenshot" or spec.kind == "music" then
-    local thumb = ui.image(spec.image or spec.cover, 32, 32, gears.shape.circle)
-    local l = ui.label { text = spec.header, size = 16, bold = true }
-    header = wibox.widget { thumb, l, spacing = 12, layout = wibox.layout.fixed.horizontal }
-  else
-    local ic = ui.label { text = I.notif, size = 26, color = C.blue, box = 38, halign = "center" }
-    local l  = ui.label { text = spec.header, size = 16, bold = true }
-    header = wibox.widget {
-      ui.margin(ic, 0, 6, 0, 0), l,
-      spacing = 12, layout = wibox.layout.fixed.horizontal,
-    }
-  end
-
-  -- INFO
-  local title_txt = spec.title
-  local body_txt  = spec.body
-  if spec.kind == "music" then
-    title_txt = ui.limit(spec.title ~= "" and spec.title or "Unknown Title", 25)
-    body_txt  = ui.limit(spec.body ~= "" and spec.body or "Unknown Artist", 30)
-  end
-  local info = wibox.widget {
-    ui.label { text = title_txt, size = 18, bold = true, halign = "center", wrap = true },
-    ui.label { text = body_txt,  size = 14, halign = "center", wrap = true },
-    spacing = 6, layout = wibox.layout.fixed.vertical,
-  }
-
-  local has_actions = spec.kind == "screenshot" or spec.kind == "music"
-
-  local top = wibox.widget {
-    ui.margin(header, 0, 0, 12, 0),
-    ui.margin(separator(), 0, 0, 18, 0),
-    ui.margin(info, 0, 0, has_actions and 22 or 10, 0),
-    layout = wibox.layout.fixed.vertical,
-  }
-  -- click en la parte de texto = cerrar (como el eventbox del original)
-  top:buttons(gears.table.join(awful.button({}, 1, close)))
-
-  local content
-  if spec.kind == "screenshot" then
-    local file = spec.image
-    content = wibox.widget {
-      top,
-      {
-        pill_button("Copy",   function() do_screenshot_copy(file) end),
-        pill_button("Delete", function() do_screenshot_delete(file) end),
-        spacing = 15, layout = wibox.layout.flex.horizontal,
-      },
-      layout = wibox.layout.fixed.vertical,
-    }
-  elseif spec.kind == "music" then
-    content = wibox.widget {
-      top,
-      {
-        pill_button("Previous", function() awful.spawn.with_shell("audtool playlist-reverse") end),
-        pill_button("Next",     function() awful.spawn.with_shell("audtool playlist-advance") end),
-        spacing = 15, layout = wibox.layout.flex.horizontal,
-      },
-      layout = wibox.layout.fixed.vertical,
-    }
-  else
-    content = top
-  end
-
-  return ui.box(content, {
-    bg = C.bg, radius = 24, pad = { 15, 20, 15, 20 },
-    border = 1, border_color = C.border,
-  }), has_actions
-end
-
-show_popup = function(spec)
-  hide_popup(true)
-
-  local s  = primary()
-  local g  = s.geometry
-  local fx = g.x + g.width - CFG.popup_margin - CFG.popup_w
-  local fy = g.y + CFG.popup_y
-
-  local cur = {}
-  local function close() hide_popup(false) end
-
-  local card, has_actions = build_popup_card(spec, close)
-
-  cur.popup = awful.popup {
-    widget  = { card, strategy = "exact", width = CFG.popup_w, widget = wibox.container.constraint },
-    ontop   = true,
-    visible = false,
-    bg      = "#00000000",
-    type    = "notification",
-    screen  = s,
-    x       = g.x + g.width,
-    y       = fy,
-  }
-  cur.closed_x = g.x + g.width   -- fuera de pantalla, a la derecha
-
-  -- ANIMACIÓN (rubato): x va de fuera de pantalla a su sitio, sin fade
-  cur.anim = anim.new {
-    duration = CFG.popup_dur,
-    pos      = cur.closed_x,
-    on_update = function(x)
-      if not cur.popup then return end
-      cur.popup.x = math.floor(x + 0.5)
-      if cur.closing and x >= cur.closed_x - 0.5 then
-        cur.popup.visible = false
-        if pop == cur then pop = nil end
-      end
-    end,
-  }
-
-  cur.timer = gears.timer {
-    timeout     = has_actions and CFG.popup_time_actions or CFG.popup_time,
-    single_shot = true,
-    callback    = function() if pop == cur then hide_popup(false) end end,
-  }
-
-  -- Mientras el mouse está encima no se cierra solo
-  card:connect_signal("mouse::enter", function() cur.timer:stop() end)
-  card:connect_signal("mouse::leave", function()
-    if pop == cur and not cur.closing then cur.timer:again() end
-  end)
-
-  pop = cur
-  cur.popup.x = cur.closed_x
-  cur.popup.visible = true
-  cur.anim:set(fx)
-  cur.timer:start()
 end
 
 -- =========================================
@@ -397,7 +236,7 @@ end
 -- =========================================
 -- Prende un icono del menu2 durante unos segundos (si el módulo existe)
 local function flash_icon(key)
-  local ok, m2 = pcall(require, "menu2")
+  local ok, m2 = pcall(require, "ui.menu2")
   if ok and type(m2) == "table" and m2.flash then pcall(m2.flash, key) end
 end
 
@@ -421,14 +260,18 @@ function M.notify(n)
     flash_icon("notif")
     if n.kind == "screenshot" then
       flash_icon("screenshot")
-      show_popup { kind = "screenshot", header = "Screenshot",
-                   title = item.title, body = item.body, image = item.image }
+      sysnotify.show { kind = "screenshot", header = "Screenshot",
+                        title = item.title, body = item.body, image = item.image,
+                        on_copy   = function() do_screenshot_copy(item.image) end,
+                        on_delete = function() do_screenshot_delete(item.image) end }
     elseif item.app == "Music" or item.app == "Audacious" then
-      show_popup { kind = "music", header = "Music",
-                   title = item.title, body = item.body, cover = item.image }
+      sysnotify.show { kind = "music", header = "Music",
+                        title = item.title, body = item.body, cover = item.image,
+                        on_prev = function() awful.spawn.with_shell("audtool playlist-reverse") end,
+                        on_next = function() awful.spawn.with_shell("audtool playlist-advance") end }
     else
-      show_popup { kind = "plain", header = item.app,
-                   title = item.title, body = item.body }
+      sysnotify.show { kind = "plain", header = item.app,
+                        title = item.title, body = item.body }
     end
   end
   return item.id
@@ -457,8 +300,8 @@ local function panel_geometry()
   local g = primary().geometry
   local h = math.floor(g.height * CFG.panel_h_pct)
   return {
-    x = g.x + g.width - CFG.popup_margin - CFG.panel_w,
-    y = g.y + CFG.popup_y,
+    x = g.x + g.width - CFG.panel_margin - CFG.panel_w,
+    y = g.y + CFG.panel_y,
     w = CFG.panel_w,
     h = h,
   }
@@ -640,6 +483,7 @@ function M.init()
   started = true
   build_panel()
   rebuild()
+  sysnotify.connect_naughty(M.notify) -- puente naughty -> este mismo pipeline (guarda + popup)
   watch_queue()
   watch_music()
 end

@@ -9,8 +9,8 @@
 --       .bspwm-label margin-left 15 · .arrow margin-left 30 + 22px · .menu-label-1-5 margin-left 15
 --
 -- Uso (rc.lua ya lo llama así):
---   require("menu1").show(x, y)     -- clic derecho en el escritorio
---   require("menu1").hide()         -- clic izquierdo en el escritorio
+--   require("ui.menu1").show(x, y)     -- clic derecho en el escritorio
+--   require("ui.menu1").hide()         -- clic izquierdo en el escritorio
 
 local awful = require("awful")
 local gears = require("gears")

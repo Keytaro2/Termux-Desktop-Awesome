@@ -15,7 +15,7 @@
 -- anima se ve un fondo vacío redondeado y el contenido real solo aparece casi abierto (h > alto-10);
 -- al cerrar el contenido desaparece al instante y la caja se encoge. Sin fade.
 --
--- Uso:  require("screnshoot").toggle()
+-- Uso:  require("ui.screnshoot").toggle()
 
 local awful = require("awful")
 local gears = require("gears")
@@ -109,7 +109,7 @@ local function capture()
   awful.spawn.easy_async_with_shell(cmd, function(out)
     if out and out:match("ok") then
       -- screenshot_ready ya prende el icono de screenshot en menu2
-      require("notifications").screenshot_ready(file)
+      require("ui.notifications").screenshot_ready(file)
     end
   end)
 end

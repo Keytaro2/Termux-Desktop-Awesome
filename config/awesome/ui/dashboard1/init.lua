@@ -4,7 +4,7 @@
 -- Geometría original:  x 120px · ancho 650px · alto 97% · anclado a la izquierda, centrado en Y
 --
 -- Uso (rc.lua):
---   s.mydash = require("dashboard1").build(s)
+--   s.mydash = require("ui.dashboard1").build(s)
 --   s.mydash.toggle()
 
 local awful = require("awful")
@@ -240,7 +240,7 @@ function M.build(s)
   -- mide 36 px de alto y los botones se dibujan a la izquierda y a la derecha.
   local user_bottom = wibox.widget {
     {
-      sq_btn(I.pwr_btn, C.blue, function() ui.call("powermenu", "toggle") end),
+      sq_btn(I.pwr_btn, C.blue, function() ui.call("ui.powermenu", "toggle") end),
       halign = "left", valign = "center",
       widget = wibox.container.place,
     },

@@ -238,7 +238,7 @@ function M.call(modname, fn, ...)
   end
   local msg = ok and ("'" .. modname .. "' no tiene " .. fn .. "()")
                   or ("Módulo '" .. modname .. "' aún no migrado a Lua")
-  local nok, notifs = pcall(require, "notifications")
+  local nok, notifs = pcall(require, "ui.notifications")
   if nok and notifs.notify then
     -- arriba del popup va el nombre del módulo (como "Screenshot" en
     -- screenshot_ready), no el genérico "Awesome"

@@ -10,8 +10,7 @@ awful = require("awful")
 require("awful.autofocus")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
-local naughty = require("naughty")
-local notifs = require("notifications")
+local notifs = require("ui.notifications")
 
 -- =========================================
 -- CURSOR POR DEFECTO: Bibata-Material-Cloud-Light
@@ -114,10 +113,11 @@ do
 end
 
 -- =========================================
--- HELPER: Rounded corners (terminal, thunar, audacious, firefox)
+-- HELPER: Rounded corners
 -- =========================================
--- Estas 4 apps son las únicas que llegan a titlebars_enabled = true (ver RULES
--- más abajo), así que el radio se aplica en el signal "request::titlebars".
+-- titlebars_enabled = true es GLOBAL (ver RULES más abajo: cualquier ventana
+-- normal/dialog), así que el radio se aplica para todas en el signal
+-- "request::titlebars", no solo para terminal/thunar/audacious/firefox.
 -- OJO: c.shape recorta TODA la ventana, titlebar incluido (la barra de los 3
 -- botones no es una ventana aparte, así que su propio .shape no hace nada).
 -- Por eso el cliente se redondea con las 4 esquinas y así también quedan
@@ -229,8 +229,8 @@ awful.screen.connect_for_each_screen(function(s)
     awful.tag({ "1", "2", "3", "4", "5" }, s, awful.layout.layouts[1])
 
     -- Dashboard (Super-botón del bar) y barra vertical, ahora en Lua
-    s.mydash = require("dashboard1").build(s)
-    s.mybar  = require("bar").build(s, {
+    s.mydash = require("ui.dashboard1").build(s)
+    s.mybar  = require("ui.bar").build(s, {
         on_dashboard = function() s.mydash.toggle() end,
     })
 end)
@@ -319,9 +319,9 @@ clientbuttons = gears.table.join(
     end)
 )
 
--- menu1 (menú contextual) ahora es un módulo Lua: ~/.config/awesome/menu1/init.lua (show(x, y) / hide())
+-- menu1 (menú contextual) ahora es un módulo Lua: ~/.config/awesome/ui/menu1.lua (show(x, y) / hide())
 local function menu1(fn, ...)
-    local ok, m = pcall(require, "menu1")
+    local ok, m = pcall(require, "ui.menu1")
     if ok and type(m) == "table" and type(m[fn]) == "function" then m[fn](...) end
 end
 
@@ -343,17 +343,6 @@ root.buttons(gears.table.join(
 -- =========================================
 awful.rules.rules = {
     {
-        rule = { instance = "eww-powermenu" },
-        properties = {
-            floating = true,
-            border_width = 0,
-            titlebars_enabled = false,
-            sticky = true,
-            ontop = true,
-            skip_taskbar = true,
-        }
-    },
-    {
         -- Base rule for ALL windows
         rule = {},
         properties = {
@@ -364,12 +353,20 @@ awful.rules.rules = {
             placement = awful.placement.centered + awful.placement.no_offscreen,
             size_hints_honor = false,
             screen = awful.screen.preferred,
-            titlebars_enabled = false, -- OFF by default so it doesn't interfere with other apps
+            titlebars_enabled = false, -- default OFF; la regla global de abajo lo prende para normal/dialog
             buttons = clientbuttons,
         },
         callback = function(c)
             awful.placement.centered(c, nil)
         end
+    },
+    {
+        -- Los 3 puntitos, GLOBAL: igual que AlphaTechnolog (configuration/rules.lua), cualquier
+        -- ventana normal o dialog los recibe sola, sin listar apps una por una.
+        rule_any = { type = { "normal", "dialog" } },
+        properties = {
+            titlebars_enabled = true,
+        }
     },
     {
         -- Rule for Terminal, Thunar, and Audacious
@@ -378,7 +375,6 @@ awful.rules.rules = {
             width  = 650,
             height = 400,
             placement = awful.placement.centered,
-            titlebars_enabled = true -- Explicitly ON
         },
         callback = function(c)
             awful.placement.centered(c, nil)
@@ -396,7 +392,6 @@ awful.rules.rules = {
             height = 550,
             placement = awful.placement.centered,
             size_hints_honor = false,
-            titlebars_enabled = true, -- Explicitly ON
         },
         callback = function(c)
             -- Initial centering
@@ -410,7 +405,20 @@ awful.rules.rules = {
                 end
             end)
         end
-    }
+    },
+    {
+        -- Powermenu: NUNCA debe tener titlebar. Va AL FINAL para ganarle a la regla
+        -- global de arriba (si no, le aparecerían los 3 puntitos al popup del power menu).
+        rule = { instance = "eww-powermenu" },
+        properties = {
+            floating = true,
+            border_width = 0,
+            titlebars_enabled = false,
+            sticky = true,
+            ontop = true,
+            skip_taskbar = true,
+        }
+    },
 }
 
 -- =========================================
@@ -468,16 +476,7 @@ client.connect_signal("request::titlebars", function(c)
     }
 end)
 
--- =========================================
--- NOTIFICATION BRIDGE (NAUGHTY -> panel Lua)
--- =========================================
-naughty.connect_signal("request::display", function(n)
-    notifs.notify {
-        app   = tostring(n.app_name or "System"),
-        title = tostring(n.title or "Notification"),
-        body  = tostring(n.message or ""),
-    }
-    pcall(function() n:destroy() end)
-end)
+-- (El puente NAUGHTY -> panel Lua ahora vive en ui/sysnotify.lua, junto al
+-- render del popup; se conecta solo, desde notifs.init() más arriba.)
 
 -- (El icono del layout y su tooltip ahora los maneja bar/init.lua directamente.)
