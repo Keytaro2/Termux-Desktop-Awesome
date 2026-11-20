@@ -13,7 +13,7 @@
 
 
 <div align="center">
-    <h4>✨This is a more faithful desktop version from Alphatechnolog; enjoy it✨</h4>
+    <h4>✨This is a more faithful desktop version from Alphatechnolog, enjoy it. No Eww, pure Lua✨</h4>
 </div>
 
 ### 🚀 old Readme
@@ -93,8 +93,7 @@ apt update && apt upgrade -y && apt install git wget python python3 python-pip x
 | `alt` + `-` | Take a screenshot of a selected area. |
 | `alt` + `r` | Restart Awesome. |
 | `alt` + `q` | Quit Awesome. |
-| `ctrl` + `d` | Run Rofi (App Launcher). |
-| `alt` + `d` | Close Eww launcher. |
+| `ctrl` + `d` | Run Rofi (App Launcher). | 
 | `ctrl` + `left` | Move floating window to the left. |
 | `ctrl` + `down` | Move floating window down. |
 | `ctrl` + `up` | Move floating window up. |
